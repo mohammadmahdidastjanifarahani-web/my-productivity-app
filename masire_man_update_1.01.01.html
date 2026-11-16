@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مسیر من | نسخه 1.01.01</title>
+<style>
+:root{--bg:#0b1020;--panel:#141c30;--panel2:#1b2740;--line:#2a3855;--text:#eef3ff;--muted:#9eacc7;--accent:#72e0b2;--blue:#8db5ff;--gold:#f4ca75;--red:#ff8d98}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1b3150 0,transparent 40%),var(--bg);color:var(--text);font-family:Tahoma,"Segoe UI",sans-serif;line-height:1.65}
+button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:10px 14px;background:var(--accent);color:#092017;font-weight:700}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#482632;color:#ffdce0}button:disabled{opacity:.4;cursor:not-allowed}
+.wrap{max-width:1180px;margin:auto;padding:24px 18px 60px}.top{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:22px;text-align:center}.brand h1{font-size:29px}.top-actions{justify-content:center}.brand small{color:var(--muted);letter-spacing:2px}.brand h1{margin:2px 0;font-size:27px}.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:15px}.card{background:linear-gradient(145deg,var(--panel),#111a2c);border:1px solid var(--line);border-radius:19px;padding:18px;min-width:0;box-shadow:0 12px 35px #0002}.stats{grid-column:span 3}.wide{grid-column:span 8}.side{grid-column:span 4}.full{grid-column:1/-1}.card h2{font-size:17px;margin:0 0 14px}.muted{color:var(--muted);font-size:13px}.big{font-size:30px;font-weight:800;direction:ltr;text-align:right}.stat-foot{font-size:12px;color:var(--muted)}
+.progress{height:10px;background:#26334d;border-radius:99px;overflow:hidden;margin:9px 0}.progress>i{display:block;height:100%;background:linear-gradient(90deg,#59c99c,#a2f2c9);width:0%;border-radius:99px;transition:width .3s}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.field{display:flex;flex-direction:column;gap:5px;min-width:0}.field label{font-size:12px;color:var(--muted)}input,select{background:#0e1729;border:1px solid var(--line);color:var(--text);padding:10px 11px;border-radius:10px;min-width:0;width:100%}
+.formgrid{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:9px;align-items:end}.quick{display:flex;gap:8px;flex-wrap:wrap}.quick button{flex:1;min-width:95px}.tasklist{display:flex;flex-direction:column;gap:9px}.task{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid var(--line);border-radius:13px;background:#101a2c}.task.done{opacity:.72}.task-title{font-weight:700}.task-meta{font-size:12px;color:var(--muted)}.task-actions{display:flex;gap:6px;flex-wrap:wrap}.task-actions button{padding:7px 9px;font-size:12px}.pill{font-size:11px;border:1px solid var(--line);border-radius:99px;padding:3px 8px;color:var(--blue);white-space:nowrap}
+.calendar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.dayname,.day{padding:7px 2px;text-align:center;border-radius:9px;font-size:12px}.dayname{color:var(--muted)}.day{background:#101a2c;border:1px solid transparent;min-height:42px;cursor:pointer}.day.mutedday{opacity:.3}.day.selected{border-color:var(--accent);background:#1b3a39}.day.today:after{content:"";display:block;width:4px;height:4px;background:var(--gold);border-radius:50%;margin:2px auto 0}
+.chart{height:160px;width:100%;display:block}.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-left:5px}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.badge{border:1px solid var(--line);border-radius:13px;padding:11px;text-align:center;background:#101a2c}.badge.locked{opacity:.35;filter:grayscale(1)}.badge .emoji{font-size:24px}.badge strong{display:block;font-size:12px}.badge small{font-size:10px;color:var(--muted)}
+.daily-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px}.daily-card{position:relative;overflow:hidden}.daily-card h2{display:flex;align-items:center;gap:8px}.daily-card .verse{font-size:16px;font-weight:700;line-height:2;margin:10px 0}.daily-card .meaning{color:var(--muted);font-size:14px;line-height:2}.daily-card .source{color:var(--gold);font-size:12px;margin-top:10px}.version{font-size:11px;color:var(--muted);margin-top:3px}@media(max-width:650px){.daily-grid{grid-template-columns:1fr}}
+.empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;font-size:13px}
+footer{text-align:center;color:var(--muted);font-size:11px;margin-top:20px}
+@media(max-width:850px){.stats{grid-column:span 6}.wide,.side{grid-column:1/-1}.formgrid{grid-template-columns:1fr 1fr}.formgrid .field:first-child{grid-column:1/-1}.formgrid button{grid-column:1/-1}}
+@media(max-width:480px){.wrap{padding:15px 11px 40px}.top{align-items:flex-start;flex-direction:column}.stats{grid-column:span 6}.card{padding:14px}.task{align-items:flex-start;flex-direction:column}.task-actions{width:100%}.task-actions button{flex:1}.badges{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+ <div class="brand"><small>PERSONAL PROGRESS SYSTEM · نسخه 1.01.01</small><h1 id="appHeading">مسیر من <span style="color:var(--accent)">✦</span></h1><div class="muted" id="welcomeLine">خوش آمدی! هر قدم کوچک، یک پیشرفت واقعی است.</div><div class="version">UPDATE 1.01.01</div></div>
+ <div class="top-actions"><button class="secondary" id="adminToggle">⚙ پنل مدیریت</button><button class="secondary" id="exportBtn">خروجی پشتیبان</button><button class="secondary" id="importBtn">بازیابی اطلاعات</button><input id="importFile" type="file" accept="application/json" hidden></div>
+</header>
+<section class="daily-grid" aria-label="جملات روزانه">
+ <article class="card daily-card"><h2>☪ آیه امروز از قرآن</h2><div class="verse" id="quranVerse"></div><div class="meaning" id="quranMeaning"></div><div class="source" id="quranSource"></div></article>
+ <article class="card daily-card"><h2>✝ پیام امروز از انجیل</h2><div class="verse" id="bibleVerse"></div><div class="meaning" id="bibleMeaning"></div><div class="source" id="bibleSource"></div></article>
+</section>
+<section class="card full" id="adminPanel" style="display:none;margin-bottom:15px">
+ <div class="row"><h2>⚙ پنل مدیریت اصلی</h2><button class="secondary" id="closeAdmin">بستن پنل</button></div>
+ <p class="muted">تنظیم قوانین امتیازدهی، سطح‌ها، دسته‌بندی‌ها و مدیریت داده‌های ثبت‌شده.</p>
+ <div class="grid">
+  <div class="card side">
+   <h2>شخصی‌سازی عنوان برنامه</h2>
+   <div class="field"><label>نام برنامه / تیتر اصلی</label><input id="customAppTitle" maxlength="45" placeholder="مثلاً مسیر من"></div>
+   <div class="field" style="margin-top:8px"><label>نامی که با آن خوشامد گفته شود</label><input id="customUserName" maxlength="35" placeholder="نام شما"></div>
+   <button id="saveIdentity" style="margin-top:10px;width:100%">ذخیره شخصی‌سازی</button>
+   <p class="muted">نام انتخابی در بالای صفحه و پیام خوشامدگویی نمایش داده می‌شود.</p>
+  </div>
+  <div class="card side">
+   <h2>تنظیم امتیاز و سطح</h2>
+   <div class="field"><label>امتیاز هر ۳۰ دقیقه</label><input id="xp30" type="number" min="0" step="1"></div>
+   <div class="field" style="margin-top:8px"><label>امتیاز لازم برای هر سطح</label><input id="xpLevel" type="number" min="1" step="50"></div>
+   <button id="saveRules" style="margin-top:10px;width:100%">ذخیره قوانین</button>
+  </div>
+  <div class="card side">
+   <h2>مدیریت دسته‌بندی‌ها</h2>
+   <div class="field"><label>نام دسته جدید</label><input id="newCategory" placeholder="مثلاً مطالعه آزاد"></div>
+   <button id="addCategory" style="margin-top:8px;width:100%">افزودن دسته</button>
+   <div id="categoryAdmin" class="tasklist" style="margin-top:10px"></div>
+  </div>
+  <div class="card side">
+   <h2>مدیریت اطلاعات</h2>
+   <div class="muted">تعداد فعالیت‌ها: <b id="adminTaskCount">۰</b></div>
+   <div class="muted">تعداد ثبت‌های زمانی: <b id="adminLogCount">۰</b></div>
+   <button class="secondary" id="exportAdmin" style="width:100%;margin-top:10px">دریافت نسخه پشتیبان</button>
+   <button class="danger" id="resetData" style="width:100%;margin-top:8px">پاک‌کردن همه اطلاعات</button>
+  </div>
+ </div>
+ <div style="margin-top:15px">
+  <div class="row"><h2>ویرایش و مدیریت ثبت‌های زمانی</h2><span class="muted">اصلاح مدت و امتیاز هر ثبت</span></div>
+  <div id="adminLogs" class="tasklist"></div>
+ </div>
+</section>
+<section class="grid">
+ <div class="card stats"><div class="muted">امتیاز کل</div><div class="big" id="totalXp">۰</div><div class="stat-foot">XP جمع‌آوری‌شده</div></div>
+ <div class="card stats"><div class="muted">سطح فعلی</div><div class="big" id="level">۱</div><div class="stat-foot" id="levelName">شروع‌کننده</div></div>
+ <div class="card stats"><div class="muted">زمان ثبت‌شده</div><div class="big" id="totalTime">۰</div><div class="stat-foot">دقیقه فعالیت</div></div>
+ <div class="card stats"><div class="muted">روزهای فعال</div><div class="big" id="activeDays">۰</div><div class="stat-foot">روز با حداقل یک ثبت</div></div>
+
+ <div class="card wide">
+  <div class="row"><h2>پیشرفت سطح</h2><span class="pill" id="levelProgressText">۰ / ۵۰۰ XP</span></div>
+  <div class="progress"><i id="levelBar"></i></div>
+  <div class="row muted"><span id="levelFrom">سطح ۱</span><span id="levelTo">سطح ۲</span></div>
+  <div style="height:15px"></div>
+  <div class="row"><h2>برنامه روزانه</h2><span class="pill" id="selectedDateLabel"></span></div>
+  <div class="formgrid">
+   <div class="field"><label for="taskName">عنوان فعالیت</label><input id="taskName" placeholder="مثلاً مطالعه چینی"></div>
+   <div class="field"><label for="category">دسته‌بندی</label><select id="category"></select></div>
+   <div class="field"><label for="taskDate">تاریخ</label><input id="taskDate" type="date"></div>
+   <button id="addTask">افزودن کار</button>
+  </div>
+  <div style="height:14px"></div><div class="tasklist" id="taskList"></div>
+ </div>
+ <div class="card side">
+  <h2>تقویم فعالیت‌ها</h2>
+  <div class="calendar-head"><button class="secondary" id="prevMonth">‹</button><strong id="monthLabel"></strong><button class="secondary" id="nextMonth">›</button></div>
+  <div class="cal" id="calendar"></div>
+  <div class="muted" style="margin-top:10px">روزهای دارای فعالیت با نقطه مشخص می‌شوند. برای دیدن برنامه، یک روز را انتخاب کن.</div>
+ </div>
+ <div class="card wide">
+  <div class="row"><h2>نمودار پیشرفت هفتگی</h2><span class="pill">XP روزانه</span></div>
+  <canvas class="chart" id="chart" width="700" height="180"></canvas>
+  <div class="legend"><span><i class="dot"></i>امتیاز ثبت‌شده در هر روز</span></div>
+ </div>
+ <div class="card side">
+  <h2>ثبت سریع زمان</h2>
+  <p class="muted">یک فعالیت را از فهرست روز انتخاب کن و زمان انجام‌شده را ثبت کن.</p>
+  <div class="quick"><button class="secondary" data-quick="30">۳۰ دقیقه<br>+۳۰ XP</button><button class="secondary" data-quick="60">۱ ساعت<br>+۶۰ XP</button><button class="secondary" data-quick="120">۲ ساعت<br>+۱۲۰ XP</button></div>
+  <p class="muted" id="quickHint" style="margin-bottom:0">ابتدا یک فعالیت انتخاب کن.</p>
+ </div>
+ <div class="card full">
+  <div class="row"><h2>دستاوردها و نشان‌ها</h2><span class="pill" id="badgeCount"></span></div>
+  <div class="badges" id="badges"></div>
+ </div>
+ <div class="card full">
+  <div class="row"><h2>گزارش فعالیت‌ها</h2><span class="muted">ثبت‌های زمانی روز انتخاب‌شده</span></div>
+  <div id="logList" class="tasklist"></div>
+ </div>
+</section>
+<footer>مسیر من · نسخه 1.01.01 — اطلاعات در حافظه همین مرورگر ذخیره می‌شود؛ برای انتقال بین دستگاه‌ها از خروجی پشتیبان استفاده کن.</footer>
+</div>
+<script>
+const CATS=["مقاله","دوره‌های آموزشی","کانال یوتیوب","پیج اینستاگرام","زبان چینی","کارهای دانشگاه","انجمن‌ها","باشگاه","سایر"];
+const KEY="masireman_v1";
+// برداشت‌های کوتاه و روان از آیات؛ متن‌ها نقل‌قول ترجمه‌ای نیستند.
+const QURAN_DAILY=[
+ {v:"پس بی‌گمان همراه دشواری، آسانی است.",m:"سختی‌ها همیشگی نیستند و در کنار هر دشواری، راهی برای گشایش وجود دارد.",s:"قرآن کریم · سوره شرح، آیات ۵ و ۶"},
+ {v:"دل‌ها با یاد خدا آرام می‌گیرد.",m:"یاد خدا می‌تواند سرچشمه آرامش و اطمینان قلب باشد.",s:"قرآن کریم · سوره رعد، آیه ۲۸"},
+ {v:"خدا هیچ‌کس را بیش از توانش مکلف نمی‌کند.",m:"بار مسئولیت انسان فراتر از ظرفیت او قرار داده نشده است.",s:"قرآن کریم · سوره بقره، آیه ۲۸۶"},
+ {v:"از رحمت خدا نومید نشوید.",m:"حتی پس از خطا و دشواری، امید به بخشایش و رحمت را حفظ کنید.",s:"قرآن کریم · سوره زمر، آیه ۵۳"},
+ {v:"سست نشوید و اندوهگین نمانید؛ اگر ایمان دارید، برترید.",m:"در برابر ناکامی‌ها استوار بمانید و امید خود را از دست ندهید.",s:"قرآن کریم · سوره آل‌عمران، آیه ۱۳۹"},
+ {v:"از شکیبایی و نماز یاری بجویید.",m:"برای عبور از دشواری‌ها، صبر و ارتباط معنوی را تکیه‌گاه قرار دهید.",s:"قرآن کریم · سوره بقره، آیه ۱۵۳"},
+ {v:"کسانی که در راه ما تلاش کنند، راه‌های خود را به آنان نشان می‌دهیم.",m:"تلاش صادقانه و پیگیرانه می‌تواند راه‌های تازه‌ای پیش روی انسان بگشاید.",s:"قرآن کریم · سوره عنکبوت، آیه ۶۹"}
+];
+const GOSPEL_DAILY=[
+ {v:"برای فردا نگران نباشید؛ هر روز گرفتاری خودش را دارد.",m:"به جای فرسوده‌شدن با نگرانی آینده، به مسئولیت امروز توجه کن.",s:"انجیل متی، باب ۶، آیه ۳۴"},
+ {v:"ای زحمت‌کشان و گران‌باران، نزد من بیایید و آرامش خواهید یافت.",m:"در زمان خستگی و فشار، دعوت به آرامش و پناه معنوی را به یاد داشته باش.",s:"انجیل متی، باب ۱۱، آیه ۲۸"},
+ {v:"بخواهید تا به شما داده شود؛ بجویید تا بیابید.",m:"درخواست‌کردن، جست‌وجو و پیگیری را با امید ادامه بده.",s:"انجیل متی، باب ۷، آیه ۷"},
+ {v:"صلح‌کنندگان، فرزندان خدا خوانده خواهند شد.",m:"آشتی‌دادن و ساختن صلح، ارزشی والا در زندگی ایمانی است.",s:"انجیل متی، باب ۵، آیه ۹"},
+ {v:"سلامتی را برای شما به‌جا می‌گذارم؛ آرامش خود را به شما می‌دهم.",m:"آرامشی عمیق‌تر از آسودگی‌های زودگذر را بجوی.",s:"انجیل یوحنا، باب ۱۴، آیه ۲۷"},
+ {v:"هرچه می‌خواهید دیگران برای شما انجام دهند، شما نیز برای آنان انجام دهید.",m:"با دیگران همان‌گونه رفتار کن که دوست داری با تو رفتار شود.",s:"انجیل متی، باب ۷، آیه ۱۲"},
+ {v:"برای کسی که ایمان دارد، همه‌چیز ممکن است.",m:"ایمان و امید می‌توانند نیروی ادامه‌دادن در شرایط دشوار باشند.",s:"انجیل مرقس، باب ۹، آیه ۲۳"}
+];
+function dailyIndex(date,offset=0){let n=0;for(const ch of date)n=(n*31+ch.charCodeAt(0))>>>0;return (n+offset)%7}
+function renderDaily(){const d=today(),q=QURAN_DAILY[dailyIndex(d)],g=GOSPEL_DAILY[dailyIndex(d,3)];$("quranVerse").textContent='«'+q.v+'»';$("quranMeaning").textContent='معنی روان: '+q.m;$("quranSource").textContent=q.s;$("bibleVerse").textContent='«'+g.v+'»';$("bibleMeaning").textContent='معنی روان: '+g.m;$("bibleSource").textContent=g.s}
+function renderIdentity(){const title=(db.settings.appTitle||"مسیر من").trim()||"مسیر من",name=(db.settings.userName||"").trim();$("appHeading").innerHTML=esc(title)+' <span style="color:var(--accent)">✦</span>';$ ("welcomeLine").textContent=(name?name+"، خوش آمدی! ":"خوش آمدی! ")+"هر قدم کوچک، یک پیشرفت واقعی است.";$("customAppTitle").value=db.settings.appTitle||"مسیر من";$("customUserName").value=db.settings.userName||""}
+
+const $=id=>document.getElementById(id);
+const today=()=>{const d=new Date();return localDate(d)};
+function localDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function fa(n){return new Intl.NumberFormat("fa-IR").format(n)}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{tasks:[],logs:[]}}catch{return {tasks:[],logs:[]}}}
+let db=load(),selected=today(),selectedTask=null,month=new Date();
+db.settings ||= {xp30:30,xpLevel:500};
+db.settings.appTitle ||= "مسیر من";db.settings.userName ||= "";
+db.categories ||= [...CATS];
+function currentCats(){return db.categories||CATS}
+function xpForMinutes(m){return Math.round((m/30)*Number(db.settings.xp30||30))}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render();if($("adminPanel").style.display!=="none")renderAdmin()}
+function mins(){return db.logs.reduce((a,l)=>a+l.minutes,0)}
+function xp(){return db.logs.reduce((a,l)=>a+l.xp,0)}
+function logsOn(date){return db.logs.filter(l=>l.date===date)}
+function levelData(){let step=Math.max(1,Number(db.settings.xpLevel||500));let level=Math.floor(xp()/step)+1;return {level,within:xp()%step,step}}
+function render(){
+ renderIdentity();renderDaily();
+ $("totalXp").textContent=fa(xp());$("totalTime").textContent=fa(mins());$("activeDays").textContent=fa(new Set(db.logs.map(l=>l.date)).size);
+ const lv=levelData();$("level").textContent=fa(lv.level);$("levelName").textContent=lv.level<3?"تازه‌کار":lv.level<6?"پیگیر":lv.level<10?"پیشرو":"استاد استمرار";
+ $("levelProgressText").textContent=`${fa(lv.within)} / ${fa(lv.step)} XP`;$("levelBar").style.width=(lv.within/lv.step*100)+"%";$("levelFrom").textContent=`سطح ${fa(lv.level)}`;$("levelTo").textContent=`سطح ${fa(lv.level+1)}`;
+ $("selectedDateLabel").textContent=new Date(selected+"T12:00:00").toLocaleDateString("fa-IR",{weekday:"long",month:"long",day:"numeric"});
+ renderTasks();renderCalendar();renderChart();renderBadges();renderLogs();
+}
+function renderTasks(){
+ const list=db.tasks.filter(t=>t.date===selected);$("taskList").innerHTML="";
+ if(!list.length){$("taskList").innerHTML='<div class="empty">برای این روز هنوز کاری تعریف نکرده‌ای. یک فعالیت اضافه کن.</div>';selectedTask=null;$("quickHint").textContent="ابتدا یک فعالیت انتخاب کن.";return}
+ list.forEach(t=>{const total=db.logs.filter(l=>l.taskId===t.id).reduce((a,l)=>a+l.minutes,0);
+ const el=document.createElement("div");el.className="task"+(t.done?" done":"");
+ el.innerHTML=`<div><div class="task-title">${esc(t.name)} ${t.done?'✓':''}</div><div class="task-meta">${esc(t.category)} · ${fa(total)} دقیقه ثبت‌شده</div></div><div class="task-actions"><button class="secondary" data-select="${t.id}">${selectedTask===t.id?"انتخاب‌شده":"انتخاب"}</button><button class="secondary" data-done="${t.id}">${t.done?"بازگردانی":"انجام شد"}</button><button class="danger" data-delete="${t.id}">حذف</button></div>`;
+ $("taskList").appendChild(el)});
+ $("taskList").querySelectorAll("[data-select]").forEach(b=>b.onclick=()=>{selectedTask=b.dataset.select;renderTasks();$("quickHint").textContent="زمان را با یکی از دکمه‌های بالا ثبت کن."});
+ $("taskList").querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>{let t=db.tasks.find(x=>x.id===b.dataset.done);t.done=!t.done;save()});
+ $("taskList").querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{if(confirm("این فعالیت حذف شود؟ ثبت‌های زمانی آن نیز حذف می‌شوند.")){db.tasks=db.tasks.filter(x=>x.id!==b.dataset.delete);db.logs=db.logs.filter(x=>x.taskId!==b.dataset.delete);if(selectedTask===b.dataset.delete)selectedTask=null;save()}});
+}
+function renderCalendar(){
+ const y=month.getFullYear(),m=month.getMonth();$("monthLabel").textContent=month.toLocaleDateString("fa-IR",{month:"long",year:"numeric"});
+ const first=new Date(y,m,1),offset=(first.getDay()+1)%7,days=new Date(y,m+1,0).getDate();
+ const names=["ش","ی","د","س","چ","پ","ج"];$("calendar").innerHTML=names.map(x=>`<div class="dayname">${x}</div>`).join("");
+ const prevDays=new Date(y,m,0).getDate();
+ for(let i=0;i<42;i++){let n=i-offset+1,d,other=false;if(n<1){d=new Date(y,m-1,prevDays+n);other=true}else if(n>days){d=new Date(y,m+1,n-days);other=true}else d=new Date(y,m,n);
+ const ds=localDate(d),el=document.createElement("div");el.className="day"+(other?" mutedday":"")+(ds===selected?" selected":"")+(ds===today()?" today":"");
+ const has=db.tasks.some(t=>t.date===ds)||db.logs.some(l=>l.date===ds);el.innerHTML=fa(d.getDate())+(has?'<div style="width:4px;height:4px;border-radius:50%;background:var(--accent);margin:2px auto 0"></div>':"");
+ el.onclick=()=>{selected=ds;$("taskDate").value=ds;selectedTask=null;render()};$("calendar").appendChild(el);if(i>=offset+days-1&&i>=34)break;
+ }
+}
+function renderChart(){
+ const c=$("chart"),ctx=c.getContext("2d"),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
+ const dates=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);dates.push(localDate(d))}
+ const vals=dates.map(d=>db.logs.filter(l=>l.date===d).reduce((a,l)=>a+l.xp,0));const max=Math.max(100,...vals);
+ ctx.strokeStyle="#2a3855";ctx.lineWidth=1;for(let j=0;j<4;j++){let y=20+j*42;ctx.beginPath();ctx.moveTo(35,y);ctx.lineTo(w-10,y);ctx.stroke()}
+ const bw=42,gap=(w-65)/7;vals.forEach((v,i)=>{let bh=v/max*115,x=43+i*gap,y=145-bh;ctx.fillStyle="#72e0b2";ctx.beginPath();ctx.roundRect(x,y,bw,bh,7);ctx.fill();ctx.fillStyle="#9eacc7";ctx.font="14px Tahoma";ctx.textAlign="center";ctx.fillText(fa(v),x+bw/2,y-7);ctx.fillText(new Date(dates[i]+"T12:00:00").toLocaleDateString("fa-IR",{weekday:"short"}),x+bw/2,170)});
+}
+const achievements=[
+ ["🌱","اولین قدم","اولین ۳۰ دقیقه",()=>mins()>=30],
+ ["⏳","یک ساعت تلاش","۶۰ دقیقه فعالیت",()=>mins()>=60],
+ ["🔥","چهار ساعت","۲۴۰ دقیقه فعالیت",()=>mins()>=240],
+ ["🏅","هزار امتیاز","کسب ۱۰۰۰ XP",()=>xp()>=1000],
+ ["🚀","سطح پنج","رسیدن به سطح ۵",()=>levelData().level>=5],
+ ["📅","پیوستگی","فعالیت در ۷ روز متفاوت",()=>new Set(db.logs.map(l=>l.date)).size>=7],
+ ["🧠","تنوع","فعالیت در ۵ دسته متفاوت",()=>new Set(db.logs.map(l=>l.category)).size>=5],
+ ["🎯","برنامه‌ریز","تعریف ۱۰ فعالیت",()=>db.tasks.length>=10],
+ ["💎","استمرار","ثبت ۲۰ جلسه زمانی",()=>db.logs.length>=20]
+];
+function renderBadges(){let unlocked=achievements.filter(a=>a[3]()).length;$("badgeCount").textContent=`${fa(unlocked)} از ${fa(achievements.length)} بازشده`;
+ $("badges").innerHTML=achievements.map(a=>`<div class="badge ${a[3]?"":"locked"}"><div class="emoji">${a[0]}</div><strong>${a[1]}</strong><small>${a[2]}</small></div>`).join("")}
+function renderLogs(){let ls=logsOn(selected);$("logList").innerHTML=ls.length?ls.slice().reverse().map(l=>`<div class="task"><div><div class="task-title">${esc(l.taskName)}</div><div class="task-meta">${esc(l.category)} · ${fa(l.minutes)} دقیقه</div></div><span class="pill">+${fa(l.xp)} XP</span></div>`).join(""):'<div class="empty">هنوز زمانی برای این روز ثبت نشده است.</div>'}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("category").innerHTML=currentCats().map(c=>`<option>${esc(c)}</option>`).join("");$("taskDate").value=selected;
+$("addTask").onclick=()=>{let name=$("taskName").value.trim(),date=$("taskDate").value||selected;if(!name){alert("عنوان فعالیت را وارد کن.");return}db.tasks.push({id:crypto.randomUUID(),name,category:$("category").value,date,done:false});selected=date;selectedTask=null;$("taskName").value="";save()};
+document.querySelectorAll("[data-quick]").forEach(b=>b.onclick=()=>{if(!selectedTask){alert("ابتدا یک فعالیت را از فهرست انتخاب کن.");return}let t=db.tasks.find(x=>x.id===selectedTask);if(!t)return;let m=Number(b.dataset.quick);db.logs.push({id:crypto.randomUUID(),taskId:t.id,taskName:t.name,category:t.category,date:selected,minutes:m,xp:xpForMinutes(m)});save()});
+$("prevMonth").onclick=()=>{month.setMonth(month.getMonth()-1);renderCalendar()};$("nextMonth").onclick=()=>{month.setMonth(month.getMonth()+1);renderCalendar()};
+$("taskDate").onchange=()=>{selected=$("taskDate").value||today();selectedTask=null;month=new Date(selected+"T12:00:00");render()};
+$("exportBtn").onclick=()=>{let blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="masireman-backup.json";a.click();URL.revokeObjectURL(a.href)};
+$("importBtn").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!Array.isArray(x.tasks)||!Array.isArray(x.logs))throw Error();if(confirm("اطلاعات فعلی با نسخه پشتیبان جایگزین شود؟")){db=x;save()}}catch{alert("فایل پشتیبان معتبر نیست.")}e.target.value=""};
+
+function renderAdmin(){
+ $("xp30").value=db.settings.xp30;$("xpLevel").value=db.settings.xpLevel;
+ $("adminTaskCount").textContent=fa(db.tasks.length);$("adminLogCount").textContent=fa(db.logs.length);
+ $("categoryAdmin").innerHTML=currentCats().map((c,i)=>`<div class="task"><span>${esc(c)}</span><button class="danger" data-catdel="${i}" style="padding:5px 9px">حذف</button></div>`).join("");
+ $("categoryAdmin").querySelectorAll("[data-catdel]").forEach(b=>b.onclick=()=>{let i=Number(b.dataset.catdel);if(confirm("این دسته از فهرست انتخاب حذف شود؟ فعالیت‌های قبلی حذف نمی‌شوند.")){db.categories.splice(i,1);$("category").innerHTML=currentCats().map(c=>`<option>${esc(c)}</option>`).join("");save()}});
+ $("adminLogs").innerHTML=db.logs.length?db.logs.slice().reverse().map(l=>`<div class="task"><div><div class="task-title">${esc(l.taskName)}</div><div class="task-meta">${esc(l.date)} · ${fa(l.minutes)} دقیقه · ${fa(l.xp)} XP</div></div><div class="task-actions"><button class="secondary" data-editlog="${l.id}">ویرایش</button><button class="danger" data-dellog="${l.id}">حذف</button></div></div>`).join(""):'<div class="empty">هنوز ثبت زمانی وجود ندارد.</div>';
+ $("adminLogs").querySelectorAll("[data-editlog]").forEach(b=>b.onclick=()=>{let l=db.logs.find(x=>x.id===b.dataset.editlog);let m=prompt("مدت زمان به دقیقه:",l.minutes);if(m===null)return;m=Number(m);if(!Number.isFinite(m)||m<=0){alert("مدت باید عددی بیشتر از صفر باشد.");return}l.minutes=Math.round(m);l.xp=xpForMinutes(l.minutes);save()});
+ $("adminLogs").querySelectorAll("[data-dellog]").forEach(b=>b.onclick=()=>{if(confirm("این ثبت زمانی حذف شود؟ امتیاز آن نیز کم می‌شود.")){db.logs=db.logs.filter(x=>x.id!==b.dataset.dellog);save()}});
+}
+$("adminToggle").onclick=()=>{$("adminPanel").style.display="block";renderAdmin();$("adminPanel").scrollIntoView({behavior:"smooth"})};
+$("closeAdmin").onclick=()=>$("adminPanel").style.display="none";
+$("saveIdentity").onclick=()=>{db.settings.appTitle=$("customAppTitle").value.trim()||"مسیر من";db.settings.userName=$("customUserName").value.trim();save();alert("عنوان برنامه و نام خوشامدگویی ذخیره شد.")};
+$("saveRules").onclick=()=>{let a=Number($("xp30").value),b=Number($("xpLevel").value);if(!Number.isFinite(a)||a<0||!Number.isFinite(b)||b<1){alert("مقادیر واردشده معتبر نیستند.");return}db.settings.xp30=a;db.settings.xpLevel=b;db.logs.forEach(l=>l.xp=xpForMinutes(l.minutes));save();alert("قوانین امتیازدهی ذخیره شد. امتیاز ثبت‌های قبلی نیز با قانون جدید محاسبه شد.")};
+$("addCategory").onclick=()=>{let c=$("newCategory").value.trim();if(!c)return;if(currentCats().includes(c)){alert("این دسته از قبل وجود دارد.");return}db.categories.push(c);$("newCategory").value="";$("category").innerHTML=currentCats().map(x=>`<option>${esc(x)}</option>`).join("");save()};
+$("exportAdmin").onclick=()=>$("exportBtn").click();
+$("resetData").onclick=()=>{if(confirm("همه فعالیت‌ها، ثبت‌های زمانی و امتیازها برای همیشه از این مرورگر پاک شوند؟ ابتدا از اطلاعات نسخه پشتیبان بگیر.")){db={tasks:[],logs:[],settings:{xp30:30,xpLevel:500},categories:[...CATS]};selectedTask=null;save();renderAdmin()}};
+
+render();
+</script>
+</body>
+</html>
