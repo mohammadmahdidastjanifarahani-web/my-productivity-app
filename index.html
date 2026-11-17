@@ -4,51 +4,225 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>مسیر من | پیگیری پیشرفت</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 :root{--bg:#0b1020;--panel:#141c30;--panel2:#1b2740;--line:#2a3855;--text:#eef3ff;--muted:#9eacc7;--accent:#72e0b2;--blue:#8db5ff;--gold:#f4ca75;--red:#ff8d98}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1b3150 0,transparent 40%),var(--bg);color:var(--text);font-family:Tahoma,"Segoe UI",sans-serif;line-height:1.65}
-button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:10px 14px;background:var(--accent);color:#092017;font-weight:700}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#482632;color:#ffdce0}button:disabled{opacity:.4;cursor:not-allowed}
-.wrap{max-width:1180px;margin:auto;padding:24px 18px 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.brand small{color:var(--muted);letter-spacing:2px}.brand h1{margin:2px 0;font-size:27px}.top-actions{display:flex;gap:8px;flex-wrap:wrap}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:15px}.card{background:linear-gradient(145deg,var(--panel),#111a2c);border:1px solid var(--line);border-radius:19px;padding:18px;min-width:0;box-shadow:0 12px 35px #0002}.stats{grid-column:span 3}.wide{grid-column:span 8}.side{grid-column:span 4}.full{grid-column:1/-1}.card h2{font-size:17px;margin:0 0 14px}.muted{color:var(--muted);font-size:13px}.big{font-size:30px;font-weight:800;direction:ltr;text-align:right}.stat-foot{font-size:12px;color:var(--muted)}
-.progress{height:10px;background:#26334d;border-radius:99px;overflow:hidden;margin:9px 0}.progress>i{display:block;height:100%;background:linear-gradient(90deg,#59c99c,#a2f2c9);width:0%;border-radius:99px;transition:width .3s}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.field{display:flex;flex-direction:column;gap:5px;min-width:0}.field label{font-size:12px;color:var(--muted)}input,select{background:#0e1729;border:1px solid var(--line);color:var(--text);padding:10px 11px;border-radius:10px;min-width:0;width:100%}
-.formgrid{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:9px;align-items:end}.quick{display:flex;gap:8px;flex-wrap:wrap}.quick button{flex:1;min-width:95px}.tasklist{display:flex;flex-direction:column;gap:9px}.task{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid var(--line);border-radius:13px;background:#101a2c}.task.done{opacity:.72}.task-title{font-weight:700}.task-meta{font-size:12px;color:var(--muted)}.task-actions{display:flex;gap:6px;flex-wrap:wrap}.task-actions button{padding:7px 9px;font-size:12px}.pill{font-size:11px;border:1px solid var(--line);border-radius:99px;padding:3px 8px;color:var(--blue);white-space:nowrap}
-.calendar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.dayname,.day{padding:7px 2px;text-align:center;border-radius:9px;font-size:12px}.dayname{color:var(--muted)}.day{background:#101a2c;border:1px solid transparent;min-height:42px;cursor:pointer}.day.mutedday{opacity:.3}.day.selected{border-color:var(--accent);background:#1b3a39}.day.today:after{content:"";display:block;width:4px;height:4px;background:var(--gold);border-radius:50%;margin:2px auto 0}
-.chart{height:160px;width:100%;display:block}.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-left:5px}
-.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.badge{border:1px solid var(--line);border-radius:13px;padding:11px;text-align:center;background:#101a2c}.badge.locked{opacity:.35;filter:grayscale(1)}.badge .emoji{font-size:24px}.badge strong{display:block;font-size:12px}.badge small{font-size:10px;color:var(--muted)}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1b3150 0,transparent 40%),var(--bg);color:var(--text);font-family:Tahoma,"Segoe UI",sans-serif;line-height:1.65}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:12px;padding:10px 14px;background:var(--accent);color:#092017;font-weight:700}
+button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+button.danger{background:#482632;color:#ffdce0}
+button:disabled{opacity:.45;cursor:not-allowed}
+.wrap{max-width:1180px;margin:auto;padding:24px 18px 60px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}
+.brand small{color:var(--muted);letter-spacing:2px}
+.brand h1{margin:2px 0;font-size:27px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.user-chip{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);padding:6px 12px;border-radius:999px;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:15px}
+.card{background:linear-gradient(145deg,var(--panel),#111a2c);border:1px solid var(--line);border-radius:19px;padding:18px;min-width:0;box-shadow:0 12px 35px #0002}
+.stats{grid-column:span 3}.wide{grid-column:span 8}.side{grid-column:span 4}.full{grid-column:1/-1}
+.card h2{font-size:17px;margin:0 0 14px}
+.muted{color:var(--muted);font-size:13px}
+.big{font-size:30px;font-weight:800;direction:ltr;text-align:right}
+.stat-foot{font-size:12px;color:var(--muted)}
+.progress{height:10px;background:#26334d;border-radius:99px;overflow:hidden;margin:9px 0}
+.progress>i{display:block;height:100%;background:linear-gradient(90deg,#59c99c,#a2f2c9);width:0%;border-radius:99px;transition:width .3s}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:12px;color:var(--muted)}
+input,select{background:#0e1729;border:1px solid var(--line);color:var(--text);padding:10px 11px;border-radius:10px;min-width:0;width:100%}
+.formgrid{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:9px;align-items:end}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+.quick button{flex:1;min-width:95px}
+.tasklist{display:flex;flex-direction:column;gap:9px}
+.task{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid var(--line);border-radius:13px;background:#101a2c}
+.task.done{opacity:.72}
+.task-title{font-weight:700}
+.task-meta{font-size:12px;color:var(--muted)}
+.task-actions{display:flex;gap:6px;flex-wrap:wrap}
+.task-actions button{padding:7px 9px;font-size:12px}
+.pill{font-size:11px;border:1px solid var(--line);border-radius:99px;padding:3px 8px;color:var(--blue);white-space:nowrap}
+.calendar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.dayname,.day{padding:7px 2px;text-align:center;border-radius:9px;font-size:12px}
+.dayname{color:var(--muted)}
+.day{background:#101a2c;border:1px solid transparent;min-height:42px;cursor:pointer}
+.day.mutedday{opacity:.3}
+.day.selected{border-color:var(--accent);background:#1b3a39}
+.day.today:after{content:"";display:block;width:4px;height:4px;background:var(--gold);border-radius:50%;margin:2px auto 0}
+.chart{height:160px;width:100%;display:block}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-left:5px}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.badge{border:1px solid var(--line);border-radius:13px;padding:11px;text-align:center;background:#101a2c}
+.badge.locked{opacity:.35;filter:grayscale(1)}
+.badge .emoji{font-size:24px}
+.badge strong{display:block;font-size:12px}
+.badge small{font-size:10px;color:var(--muted)}
 .empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;font-size:13px}
 footer{text-align:center;color:var(--muted);font-size:11px;margin-top:20px}
-@media(max-width:850px){.stats{grid-column:span 6}.wide,.side{grid-column:1/-1}.formgrid{grid-template-columns:1fr 1fr}.formgrid .field:first-child{grid-column:1/-1}.formgrid button{grid-column:1/-1}}
-@media(max-width:480px){.wrap{padding:15px 11px 40px}.top{align-items:flex-start;flex-direction:column}.stats{grid-column:span 6}.card{padding:14px}.task{align-items:flex-start;flex-direction:column}.task-actions{width:100%}.task-actions button{flex:1}.badges{grid-template-columns:repeat(2,1fr)}}
+
+/* Daily Quote Card */
+.quote-card{background:linear-gradient(135deg,#182644,#101a2e);border:1px solid #354c7c;position:relative;overflow:hidden}
+.quote-text{font-size:16px;font-weight:700;color:#eef3ff;margin:8px 0 6px;line-height:1.8}
+.quote-ref{font-size:12px;color:var(--gold)}
+
+/* Auth Overlay */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{max-width:440px;width:100%;background:linear-gradient(145deg,var(--panel),#111a2c);border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:0 20px 50px #0005}
+.auth-card h1{margin:4px 0 6px;font-size:24px}
+.otp-input{direction:ltr;text-align:center;letter-spacing:8px;font-size:22px;font-weight:800}
+.status-msg{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px;display:none}
+.status-msg.ok{display:block;background:#14382c;border:1px solid #3c8c6e;color:#aef5d8}
+.status-msg.err{display:block;background:#3e1d29;border:1px solid #8c3f58;color:#ffd6e0}
+.auth-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.auth-actions button{flex:1}
+
+textarea{background:#0e1729;border:1px solid var(--line);color:var(--text);padding:10px 11px;border-radius:10px;width:100%;font:inherit;min-height:70px}
+.limits{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.lim{font-size:13px}
+.res{display:flex;flex-direction:column;gap:4px}
+.res a{color:var(--blue);font-size:12px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+.ltr{direction:ltr;unicode-bidi:embed}
+@media(max-width:850px){
+  .stats{grid-column:span 6}.wide,.side{grid-column:1/-1}
+  .formgrid{grid-template-columns:1fr 1fr}
+  .formgrid .field:first-child{grid-column:1/-1}
+  .formgrid button{grid-column:1/-1}
+}
+@media(max-width:480px){
+  .wrap{padding:15px 11px 40px}
+  .top{align-items:flex-start;flex-direction:column}
+  .stats{grid-column:span 6}.card{padding:14px}
+  .task{align-items:flex-start;flex-direction:column}
+  .task-actions{width:100%}.task-actions button{flex:1}
+  .badges{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
+
+<!-- صفحه ورود با ایمیل و کد تایید (OTP) -->
+<div id="authScreen" class="auth-wrap">
+  <div class="auth-card">
+    <small class="muted" style="letter-spacing:2px">PERSONAL PROGRESS SYSTEM</small>
+    <h1><span id="authAppTitle">مسیر من</span> <span style="color:var(--accent)">✦</span></h1>
+    <p class="muted">برای ورود به حساب خود، نام و ایمیلتان را وارد کنید تا کد ۶ رقمی برایتان ارسال شود.</p>
+
+    <div id="stepEmail">
+      <div class="field" style="margin-top:12px">
+        <label for="loginUserName">نام شما (برای خوش‌آمدگویی)</label>
+        <input id="loginUserName" type="text" placeholder="مثلاً علی">
+      </div>
+      <div class="field" style="margin-top:10px">
+        <label for="loginEmail">ایمیل شما</label>
+        <input id="loginEmail" type="email" placeholder="example@gmail.com" dir="ltr" style="text-align:left">
+      </div>
+      <div class="auth-actions">
+        <button id="sendOtpBtn" style="width:100%">ارسال کد ورود به ایمیل</button>
+      </div>
+    </div>
+
+    <div id="stepOtp" style="display:none;margin-top:14px">
+      <div class="muted" style="margin-bottom:8px">کد ۶ رقمی به <b id="otpTargetEmail" dir="ltr"></b> ارسال شد:</div>
+      <div class="field">
+        <label for="otpCodeInput">کد تایید (OTP)</label>
+        <input id="otpCodeInput" class="otp-input" maxlength="6" inputmode="numeric" placeholder="------">
+      </div>
+      <div class="auth-actions">
+        <button id="verifyOtpBtn">تایید و ورود به حساب</button>
+        <button class="secondary" id="resendOtpBtn" disabled>ارسال مجدد (<span id="cooldownSec">60</span>)</button>
+      </div>
+      <div style="margin-top:8px;text-align:center">
+        <button class="secondary" id="changeEmailBtn" style="padding:6px 10px;font-size:12px">تغییر ایمیل</button>
+      </div>
+    </div>
+
+    <div id="authStatus" class="status-msg"></div>
+  </div>
+</div>
+
+<!-- پنل اصلی برنامه -->
+<div id="appScreen" class="wrap" style="display:none">
 <header class="top">
- <div class="brand"><small>PERSONAL PROGRESS SYSTEM</small><h1>مسیر من <span style="color:var(--accent)">✦</span></h1><div class="muted">هر قدم کوچک، یک پیشرفت واقعی است.</div></div>
- <div class="top-actions"><button class="secondary" id="adminToggle">⚙ پنل مدیریت</button><button class="secondary" id="exportBtn">خروجی پشتیبان</button><button class="secondary" id="importBtn">بازیابی اطلاعات</button><input id="importFile" type="file" accept="application/json" hidden></div>
+ <div class="brand">
+  <small>PERSONAL PROGRESS SYSTEM</small>
+  <h1><span id="mainAppTitle">مسیر من</span> <span style="color:var(--accent)">✦</span></h1>
+  <div class="muted" id="welcomeBanner">هر قدم کوچک، یک پیشرفت واقعی است.</div>
+ </div>
+ <div class="top-actions">
+  <span class="user-chip">👤 <span id="currentUserBadge"></span></span>
+  <button class="secondary" id="logoutBtn">خروج</button>
+  <button class="secondary" id="adminToggle">⚙ پنل مدیریت</button>
+  <button class="secondary" id="exportBtn">خروجی پشتیبان</button>
+  <button class="secondary" id="importBtn">بازیابی اطلاعات</button>
+  <input id="importFile" type="file" accept="application/json" hidden>
+ </div>
 </header>
+
+<!-- کارت آیه / جمله روزانه -->
+<section class="card full quote-card" style="margin-bottom:15px">
+ <div class="row">
+  <div style="display:flex;align-items:center;gap:8px">
+   <span style="font-size:20px">📖</span>
+   <strong id="quoteHeaderTitle" style="font-size:14px">پیام و آیه روزانه</strong>
+   <span class="pill" id="quoteSourceBadge">قرآن کریم</span>
+  </div>
+  <button class="secondary" id="nextQuoteBtn" style="padding:6px 11px;font-size:12px">🔀 جمله بعدی</button>
+ </div>
+ <div class="quote-text" id="dailyQuoteText"></div>
+ <div class="quote-ref" id="dailyQuoteRef"></div>
+</section>
+
+<!-- پنل مدیریت -->
 <section class="card full" id="adminPanel" style="display:none;margin-bottom:15px">
  <div class="row"><h2>⚙ پنل مدیریت اصلی</h2><button class="secondary" id="closeAdmin">بستن پنل</button></div>
- <p class="muted">تنظیم قوانین امتیازدهی، سطح‌ها، دسته‌بندی‌ها و مدیریت داده‌های ثبت‌شده.</p>
+ <p class="muted">شخصی‌سازی نام برنامه، نام کاربر، واحد امتیاز، منبع جملات روزانه (قرآن، انجیل یا کتاب PDF) و دسته‌بندی‌ها.</p>
  <div class="grid">
+  <!-- شخصی‌سازی برنامه و کاربر و امتیاز -->
   <div class="card side">
-   <h2>تنظیم امتیاز و سطح</h2>
-   <div class="field"><label>امتیاز هر ۳۰ دقیقه</label><input id="xp30" type="number" min="0" step="1"></div>
-   <div class="field" style="margin-top:8px"><label>امتیاز لازم برای هر سطح</label><input id="xpLevel" type="number" min="1" step="50"></div>
-   <button id="saveRules" style="margin-top:10px;width:100%">ذخیره قوانین</button>
+   <h2>شخصی‌سازی برنامه و امتیاز</h2>
+   <div class="field"><label>نام برنامه</label><input id="appNameInput" placeholder="مثلاً مسیر من"></div>
+   <div class="field" style="margin-top:8px"><label>نام شما (مخاطب)</label><input id="userNameInput" placeholder="مثلاً علی"></div>
+   <div class="field" style="margin-top:8px"><label>نام واحد امتیاز (به‌جای XP)</label><input id="pointUnitInput" placeholder="مثلاً ستاره، الماس، امتیاز"></div>
+   <div class="field" style="margin-top:8px"><label>ضریب امتیاز هر ۳۰ دقیقه</label><input id="xp30" type="number" min="1" step="1"></div>
+   <div class="muted" style="margin-top:8px;font-size:11px">قانون سطح‌بندی: سطح ۱ با ۳۰۰ امتیاز، و تا سطح ۱۰ هر سطح ۲۰۰ امتیاز بیشتر از سطح قبل (۳۰۰، ۵۰۰، ۷۰۰ ... تا ۲۱۰۰).</div>
+   <button id="saveRules" style="margin-top:10px;width:100%">ذخیره تنظیمات شخصی و امتیاز</button>
   </div>
+
+  <!-- تنظیم منبع آیه و کتاب PDF -->
   <div class="card side">
-   <h2>مدیریت دسته‌بندی‌ها</h2>
+   <h2>آیات و کتاب روزانه (PDF)</h2>
+   <div class="field">
+    <label>منبع نمایش جملات روزانه</label>
+    <select id="quoteSourceSelect">
+     <option value="quran">آیات منتخب قرآن کریم</option>
+     <option value="bible">آیات منتخب انجیل</option>
+     <option value="both">ترکیب قرآن و انجیل</option>
+     <option value="pdf">جملات روزانه از کتاب PDF شما</option>
+    </select>
+   </div>
+   <div class="field" style="margin-top:10px">
+    <label>بارگذاری کتاب PDF برای استخراج جملات روزانه</label>
+    <input id="pdfUploadInput" type="file" accept="application/pdf">
+   </div>
+   <div class="muted" id="pdfStatusInfo" style="margin-top:8px">هیچ کتاب PDF بارگذاری نشده است.</div>
+   <button class="secondary" id="clearPdfQuotesBtn" style="margin-top:8px;width:100%">حذف کتاب PDF ذخیره‌شده</button>
+  </div>
+
+  <!-- مدیریت دسته‌بندی‌ها و پشتیبان -->
+  <div class="card side">
+   <h2>دسته‌بندی‌ها و اطلاعات</h2>
    <div class="field"><label>نام دسته جدید</label><input id="newCategory" placeholder="مثلاً مطالعه آزاد"></div>
    <button id="addCategory" style="margin-top:8px;width:100%">افزودن دسته</button>
-   <div id="categoryAdmin" class="tasklist" style="margin-top:10px"></div>
-  </div>
-  <div class="card side">
-   <h2>مدیریت اطلاعات</h2>
-   <div class="muted">تعداد فعالیت‌ها: <b id="adminTaskCount">۰</b></div>
-   <div class="muted">تعداد ثبت‌های زمانی: <b id="adminLogCount">۰</b></div>
-   <button class="secondary" id="exportAdmin" style="width:100%;margin-top:10px">دریافت نسخه پشتیبان</button>
+   <div id="categoryAdmin" class="tasklist" style="margin-top:10px;max-height:150px;overflow:auto"></div>
+   <hr style="border:0;border-top:1px solid var(--line);margin:12px 0">
+   <div class="muted">تعداد فعالیت‌ها: <b id="adminTaskCount">۰</b> | ثبت‌ها: <b id="adminLogCount">۰</b></div>
+   <button class="secondary" id="exportAdmin" style="width:100%;margin-top:8px">دریافت نسخه پشتیبان</button>
    <button class="danger" id="resetData" style="width:100%;margin-top:8px">پاک‌کردن همه اطلاعات</button>
   </div>
  </div>
@@ -57,14 +231,15 @@ footer{text-align:center;color:var(--muted);font-size:11px;margin-top:20px}
   <div id="adminLogs" class="tasklist"></div>
  </div>
 </section>
+
 <section class="grid">
- <div class="card stats"><div class="muted">امتیاز کل</div><div class="big" id="totalXp">۰</div><div class="stat-foot">XP جمع‌آوری‌شده</div></div>
+ <div class="card stats"><div class="muted">کل <span class="unit-label">امتیاز</span></div><div class="big" id="totalXp">۰</div><div class="stat-foot"><span class="unit-label">امتیاز</span> جمع‌آوری‌شده</div></div>
  <div class="card stats"><div class="muted">سطح فعلی</div><div class="big" id="level">۱</div><div class="stat-foot" id="levelName">شروع‌کننده</div></div>
  <div class="card stats"><div class="muted">زمان ثبت‌شده</div><div class="big" id="totalTime">۰</div><div class="stat-foot">دقیقه فعالیت</div></div>
  <div class="card stats"><div class="muted">روزهای فعال</div><div class="big" id="activeDays">۰</div><div class="stat-foot">روز با حداقل یک ثبت</div></div>
 
  <div class="card wide">
-  <div class="row"><h2>پیشرفت سطح</h2><span class="pill" id="levelProgressText">۰ / ۵۰۰ XP</span></div>
+  <div class="row"><h2>پیشرفت سطح (پلکانی ۳۰۰ تا سطح ۱۰ با گام +۲۰۰)</h2><span class="pill" id="levelProgressText">۰ / ۳۰۰</span></div>
   <div class="progress"><i id="levelBar"></i></div>
   <div class="row muted"><span id="levelFrom">سطح ۱</span><span id="levelTo">سطح ۲</span></div>
   <div style="height:15px"></div>
@@ -84,17 +259,47 @@ footer{text-align:center;color:var(--muted);font-size:11px;margin-top:20px}
   <div class="muted" style="margin-top:10px">روزهای دارای فعالیت با نقطه مشخص می‌شوند. برای دیدن برنامه، یک روز را انتخاب کن.</div>
  </div>
  <div class="card wide">
-  <div class="row"><h2>نمودار پیشرفت هفتگی</h2><span class="pill">XP روزانه</span></div>
+  <div class="row"><h2>نمودار پیشرفت هفتگی</h2><span class="pill" id="chartUnitPill">امتیاز روزانه</span></div>
   <canvas class="chart" id="chart" width="700" height="180"></canvas>
-  <div class="legend"><span><i class="dot"></i>امتیاز ثبت‌شده در هر روز</span></div>
+  <div class="legend"><span><i class="dot"></i><span class="unit-label">امتیاز</span> ثبت‌شده در هر روز</span></div>
  </div>
  <div class="card side">
   <h2>ثبت سریع زمان</h2>
   <p class="muted">یک فعالیت را از فهرست روز انتخاب کن و زمان انجام‌شده را ثبت کن.</p>
-  <div class="quick"><button class="secondary" data-quick="30">۳۰ دقیقه<br>+۳۰ XP</button><button class="secondary" data-quick="60">۱ ساعت<br>+۶۰ XP</button><button class="secondary" data-quick="120">۲ ساعت<br>+۱۲۰ XP</button></div>
+  <div class="quick">
+   <button class="secondary" data-quick="30" id="qBtn30">۳۰ دقیقه</button>
+   <button class="secondary" data-quick="60" id="qBtn60">۱ ساعت</button>
+   <button class="secondary" data-quick="120" id="qBtn120">۲ ساعت</button>
+  </div>
   <p class="muted" id="quickHint" style="margin-bottom:0">ابتدا یک فعالیت انتخاب کن.</p>
  </div>
  <div class="card full">
+  <div class="row"><h2>⏱ سقف زمانی امروز</h2><span class="pill">هر دسته حداکثر ۲ ساعت در روز</span></div>
+  <div id="limitList" class="limits"></div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+  <div class="row"><strong>☕ استراحت امروز (حداکثر ۱ ساعت و نیم)</strong><span class="pill" id="restPill"></span></div>
+  <div class="progress"><i id="restBar" style="background:linear-gradient(90deg,#f4ca75,#ffe2a3)"></i></div>
+  <div class="quick"><button class="secondary" data-rest="15">+۱۵ دقیقه</button><button class="secondary" data-rest="30">+۳۰ دقیقه</button><button class="secondary" data-rest="45">+۴۵ دقیقه</button><button class="danger" id="restUndo">برگرداندن آخرین</button></div>
+</div>
+<div class="card full">
+  <div class="row"><h2>🤖 دستیار برنامه‌ریزی هوشمند</h2><span class="pill" id="aiState"></span></div>
+  <p class="muted">هدف‌هایت را بنویس (مثلاً: یادگیری چینی، پایان‌نامه، ورزش، تولید محتوا). دستیار نام دسته‌ها و برنامه امروز را پیشنهاد می‌دهد؛ سقف هر دسته ۲ ساعت رعایت می‌شود و استراحت هم در نظر گرفته می‌شود.</p>
+  <textarea id="aiGoal" placeholder="هدف‌ها و دغدغه‌هایت را بنویس..."></textarea>
+  <div class="quick" style="margin-top:8px"><button id="aiPlanBtn">پیشنهاد دسته‌ها و برنامه امروز</button></div>
+  <div id="aiPlanOut" style="margin-top:12px"></div>
+  <details style="margin-top:12px"><summary class="muted" style="cursor:pointer">تنظیم کلید API هوش مصنوعی (اختیاری)</summary>
+   <p class="muted">بدون کلید، دستیار در حالت ساده و آفلاین کار می‌کند. با کلید Anthropic، پیشنهادها هوشمند می‌شوند. کلید فقط در مرورگر همین دستگاه ذخیره می‌شود و در پشتیبان قرار نمی‌گیرد.</p>
+   <div class="row"><input id="aiKeyInput" type="password" dir="ltr" placeholder="sk-ant-..." style="flex:1"><button id="aiKeySave" class="secondary">ذخیره</button><button id="aiKeyClear" class="danger">حذف کلید</button></div>
+  </details>
+</div>
+<div class="card full">
+  <div class="row"><h2>🎬 معرفی فیلم و سریال (IMDb)</h2><span class="pill">۵ سؤال، ۵ پیشنهاد</span></div>
+  <div class="qgrid" id="movieForm"></div>
+  <button id="movieBtn">پیشنهاد بده</button>
+  <div id="movieOut" class="tasklist" style="margin-top:12px"></div>
+  <div class="muted" style="margin-top:8px;font-size:11px">امتیازها تقریبی‌اند؛ برای نمره دقیق و لحظه‌ای روی لینک IMDb هر عنوان بزن.</div>
+</div>
+<div class="card full">
   <div class="row"><h2>دستاوردها و نشان‌ها</h2><span class="pill" id="badgeCount"></span></div>
   <div class="badges" id="badges"></div>
  </div>
@@ -102,103 +307,786 @@ footer{text-align:center;color:var(--muted);font-size:11px;margin-top:20px}
   <div class="row"><h2>گزارش فعالیت‌ها</h2><span class="muted">ثبت‌های زمانی روز انتخاب‌شده</span></div>
   <div id="logList" class="tasklist"></div>
  </div>
-</section>
-<footer>اطلاعات در حافظه مرورگر همین دستگاه ذخیره می‌شود. برای اطمینان، هر چند وقت یک‌بار خروجی پشتیبان بگیر.</footer>
+<div class="card full">
+  <div class="row"><h2>🎧 پادکست‌های پیشنهادی برای تو</h2><button class="secondary" id="podBtn" style="padding:6px 11px;font-size:12px">🔄 پیشنهاد جدید</button></div>
+  <p class="muted">بر اساس دسته‌بندی‌ها، فعالیت‌ها و زمان‌هایی که ثبت کرده‌ای.</p>
+  <div id="podOut" class="tasklist"></div>
 </div>
+</section>
+<footer>اطلاعات در حافظه مرورگر همین دستگاه برای ایمیل واردشده ذخیره می‌شود. برای اطمینان، هر چند وقت یک‌بار خروجی پشتیبان بگیر.</footer>
+</div>
+
 <script>
-const CATS=["مقاله","دوره‌های آموزشی","کانال یوتیوب","پیج اینستاگرام","زبان چینی","کارهای دانشگاه","انجمن‌ها","باشگاه","سایر"];
-const KEY="masireman_v1";
-const $=id=>document.getElementById(id);
-const today=()=>{const d=new Date();return localDate(d)};
-function localDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
-function fa(n){return new Intl.NumberFormat("fa-IR").format(n)}
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||{tasks:[],logs:[]}}catch{return {tasks:[],logs:[]}}}
-let db=load(),selected=today(),selectedTask=null,month=new Date();
-db.settings ||= {xp30:30,xpLevel:500};
-db.categories ||= [...CATS];
-function currentCats(){return db.categories||CATS}
-function xpForMinutes(m){return Math.round((m/30)*Number(db.settings.xp30||30))}
-function save(){localStorage.setItem(KEY,JSON.stringify(db));render();if($("adminPanel").style.display!=="none")renderAdmin()}
-function mins(){return db.logs.reduce((a,l)=>a+l.minutes,0)}
-function xp(){return db.logs.reduce((a,l)=>a+l.xp,0)}
-function logsOn(date){return db.logs.filter(l=>l.date===date)}
-function levelData(){let step=Math.max(1,Number(db.settings.xpLevel||500));let level=Math.floor(xp()/step)+1;return {level,within:xp()%step,step}}
-function render(){
- $("totalXp").textContent=fa(xp());$("totalTime").textContent=fa(mins());$("activeDays").textContent=fa(new Set(db.logs.map(l=>l.date)).size);
- const lv=levelData();$("level").textContent=fa(lv.level);$("levelName").textContent=lv.level<3?"تازه‌کار":lv.level<6?"پیگیر":lv.level<10?"پیشرو":"استاد استمرار";
- $("levelProgressText").textContent=`${fa(lv.within)} / ${fa(lv.step)} XP`;$("levelBar").style.width=(lv.within/lv.step*100)+"%";$("levelFrom").textContent=`سطح ${fa(lv.level)}`;$("levelTo").textContent=`سطح ${fa(lv.level+1)}`;
- $("selectedDateLabel").textContent=new Date(selected+"T12:00:00").toLocaleDateString("fa-IR",{weekday:"long",month:"long",day:"numeric"});
- renderTasks();renderCalendar();renderChart();renderBadges();renderLogs();
+// تنظیمات EmailJS کاربر
+const EMAILJS_PUBLIC_KEY = "mpZy3WvBZnPda-XK_";
+const EMAILJS_SERVICE_ID = "service_e0zu56p";
+const EMAILJS_TEMPLATE_ID = "template_v0d1yzm";
+
+if (window.emailjs) {
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 }
-function renderTasks(){
- const list=db.tasks.filter(t=>t.date===selected);$("taskList").innerHTML="";
- if(!list.length){$("taskList").innerHTML='<div class="empty">برای این روز هنوز کاری تعریف نکرده‌ای. یک فعالیت اضافه کن.</div>';selectedTask=null;$("quickHint").textContent="ابتدا یک فعالیت انتخاب کن.";return}
- list.forEach(t=>{const total=db.logs.filter(l=>l.taskId===t.id).reduce((a,l)=>a+l.minutes,0);
- const el=document.createElement("div");el.className="task"+(t.done?" done":"");
- el.innerHTML=`<div><div class="task-title">${esc(t.name)} ${t.done?'✓':''}</div><div class="task-meta">${esc(t.category)} · ${fa(total)} دقیقه ثبت‌شده</div></div><div class="task-actions"><button class="secondary" data-select="${t.id}">${selectedTask===t.id?"انتخاب‌شده":"انتخاب"}</button><button class="secondary" data-done="${t.id}">${t.done?"بازگردانی":"انجام شد"}</button><button class="danger" data-delete="${t.id}">حذف</button></div>`;
- $("taskList").appendChild(el)});
- $("taskList").querySelectorAll("[data-select]").forEach(b=>b.onclick=()=>{selectedTask=b.dataset.select;renderTasks();$("quickHint").textContent="زمان را با یکی از دکمه‌های بالا ثبت کن."});
- $("taskList").querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>{let t=db.tasks.find(x=>x.id===b.dataset.done);t.done=!t.done;save()});
- $("taskList").querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{if(confirm("این فعالیت حذف شود؟ ثبت‌های زمانی آن نیز حذف می‌شوند.")){db.tasks=db.tasks.filter(x=>x.id!==b.dataset.delete);db.logs=db.logs.filter(x=>x.taskId!==b.dataset.delete);if(selectedTask===b.dataset.delete)selectedTask=null;save()}});
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 }
-function renderCalendar(){
- const y=month.getFullYear(),m=month.getMonth();$("monthLabel").textContent=month.toLocaleDateString("fa-IR",{month:"long",year:"numeric"});
- const first=new Date(y,m,1),offset=(first.getDay()+1)%7,days=new Date(y,m+1,0).getDate();
- const names=["ش","ی","د","س","چ","پ","ج"];$("calendar").innerHTML=names.map(x=>`<div class="dayname">${x}</div>`).join("");
- const prevDays=new Date(y,m,0).getDate();
- for(let i=0;i<42;i++){let n=i-offset+1,d,other=false;if(n<1){d=new Date(y,m-1,prevDays+n);other=true}else if(n>days){d=new Date(y,m+1,n-days);other=true}else d=new Date(y,m,n);
- const ds=localDate(d),el=document.createElement("div");el.className="day"+(other?" mutedday":"")+(ds===selected?" selected":"")+(ds===today()?" today":"");
- const has=db.tasks.some(t=>t.date===ds)||db.logs.some(l=>l.date===ds);el.innerHTML=fa(d.getDate())+(has?'<div style="width:4px;height:4px;border-radius:50%;background:var(--accent);margin:2px auto 0"></div>':"");
- el.onclick=()=>{selected=ds;$("taskDate").value=ds;selectedTask=null;render()};$("calendar").appendChild(el);if(i>=offset+days-1&&i>=34)break;
- }
-}
-function renderChart(){
- const c=$("chart"),ctx=c.getContext("2d"),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
- const dates=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);dates.push(localDate(d))}
- const vals=dates.map(d=>db.logs.filter(l=>l.date===d).reduce((a,l)=>a+l.xp,0));const max=Math.max(100,...vals);
- ctx.strokeStyle="#2a3855";ctx.lineWidth=1;for(let j=0;j<4;j++){let y=20+j*42;ctx.beginPath();ctx.moveTo(35,y);ctx.lineTo(w-10,y);ctx.stroke()}
- const bw=42,gap=(w-65)/7;vals.forEach((v,i)=>{let bh=v/max*115,x=43+i*gap,y=145-bh;ctx.fillStyle="#72e0b2";ctx.beginPath();ctx.roundRect(x,y,bw,bh,7);ctx.fill();ctx.fillStyle="#9eacc7";ctx.font="14px Tahoma";ctx.textAlign="center";ctx.fillText(fa(v),x+bw/2,y-7);ctx.fillText(new Date(dates[i]+"T12:00:00").toLocaleDateString("fa-IR",{weekday:"short"}),x+bw/2,170)});
-}
-const achievements=[
- ["🌱","اولین قدم","اولین ۳۰ دقیقه",()=>mins()>=30],
- ["⏳","یک ساعت تلاش","۶۰ دقیقه فعالیت",()=>mins()>=60],
- ["🔥","چهار ساعت","۲۴۰ دقیقه فعالیت",()=>mins()>=240],
- ["🏅","هزار امتیاز","کسب ۱۰۰۰ XP",()=>xp()>=1000],
- ["🚀","سطح پنج","رسیدن به سطح ۵",()=>levelData().level>=5],
- ["📅","پیوستگی","فعالیت در ۷ روز متفاوت",()=>new Set(db.logs.map(l=>l.date)).size>=7],
- ["🧠","تنوع","فعالیت در ۵ دسته متفاوت",()=>new Set(db.logs.map(l=>l.category)).size>=5],
- ["🎯","برنامه‌ریز","تعریف ۱۰ فعالیت",()=>db.tasks.length>=10],
- ["💎","استمرار","ثبت ۲۰ جلسه زمانی",()=>db.logs.length>=20]
+
+// بانک آیات قرآن کریم و انجیل
+const QURAN_VERSES = [
+  { text: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا • إِنَّ مَعَ الْعُسْرِ يُسْرًا (پس مسلماً با هر دشواری آسانی است.)", ref: "قرآن کریم — سوره شرح، آیات ۵ و ۶" },
+  { text: "وَأَن لَّيْسَ لِلْإِنسَانِ إِلَّا مَا سَعَىٰ (و اینکه برای انسان جز حاصل تلاش او نیست.)", ref: "قرآن کریم — سوره نجم، آیه ۳۹" },
+  { text: "إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ (همانا خداوند پاداش نیکوکاران را ضایع نمی‌کند.)", ref: "قرآن کریم — سوره توبه، آیه ۱۲۰" },
+  { text: "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ (و هر کس بر خدا توکل کند، او برایش کافی است.)", ref: "قرآن کریم — سوره طلاق، آیه ۳" },
+  { text: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ (آگاه باشید که تنها با یاد خدا دل‌ها آرامش می‌یابد.)", ref: "قرآن کریم — سوره رعد، آیه ۲۸" },
+  { text: "وَاصْبِرْ فَإِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ (و شکیبا باش که خداوند پاداش نیکوکاران را تباه نمی‌کند.)", ref: "قرآن کریم — سوره هود، آیه ۱۱۵" },
+  { text: "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا (خداوند هیچ کس را جز به اندازه توانش تکلیف نمی‌کند.)", ref: "قرآن کریم — سوره بقره، آیه ۲۸۶" }
 ];
-function renderBadges(){let unlocked=achievements.filter(a=>a[3]()).length;$("badgeCount").textContent=`${fa(unlocked)} از ${fa(achievements.length)} بازشده`;
- $("badges").innerHTML=achievements.map(a=>`<div class="badge ${a[3]?"":"locked"}"><div class="emoji">${a[0]}</div><strong>${a[1]}</strong><small>${a[2]}</small></div>`).join("")}
-function renderLogs(){let ls=logsOn(selected);$("logList").innerHTML=ls.length?ls.slice().reverse().map(l=>`<div class="task"><div><div class="task-title">${esc(l.taskName)}</div><div class="task-meta">${esc(l.category)} · ${fa(l.minutes)} دقیقه</div></div><span class="pill">+${fa(l.xp)} XP</span></div>`).join(""):'<div class="empty">هنوز زمانی برای این روز ثبت نشده است.</div>'}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-$("category").innerHTML=currentCats().map(c=>`<option>${esc(c)}</option>`).join("");$("taskDate").value=selected;
-$("addTask").onclick=()=>{let name=$("taskName").value.trim(),date=$("taskDate").value||selected;if(!name){alert("عنوان فعالیت را وارد کن.");return}db.tasks.push({id:crypto.randomUUID(),name,category:$("category").value,date,done:false});selected=date;selectedTask=null;$("taskName").value="";save()};
-document.querySelectorAll("[data-quick]").forEach(b=>b.onclick=()=>{if(!selectedTask){alert("ابتدا یک فعالیت را از فهرست انتخاب کن.");return}let t=db.tasks.find(x=>x.id===selectedTask);if(!t)return;let m=Number(b.dataset.quick);db.logs.push({id:crypto.randomUUID(),taskId:t.id,taskName:t.name,category:t.category,date:selected,minutes:m,xp:xpForMinutes(m)});save()});
-$("prevMonth").onclick=()=>{month.setMonth(month.getMonth()-1);renderCalendar()};$("nextMonth").onclick=()=>{month.setMonth(month.getMonth()+1);renderCalendar()};
+
+const BIBLE_VERSES = [
+  { text: "هر کاری را که دستت برای انجام دادن می‌یابد، با تمام توانایی‌ات انجام بده.", ref: "کتاب مقدس — جامعه ۹:۱۰" },
+  { text: "بخواهید، که به شما داده خواهد شد؛ بجویید، که خواهید یافت؛ بکوبید، که در به رویتان گشوده خواهد شد.", ref: "انجیل متی — باب ۷، آیه ۷" },
+  { text: "در انجام کار نیک خسته نشویم، زیرا اگر دلسرد نشویم، در زمان مناسب محصول خویش را درو خواهیم کرد.", ref: "رساله غلاطیان — باب ۶، آیه ۹" },
+  { text: "من می‌توانم همه چیز را در مسیح که مرا تقویت می‌کند انجام دهم.", ref: "رساله فیلیپیان — باب ۴، آیه ۱۳" },
+  { text: "در اموری که بسیار کوچک است امین باش، زیرا کسی که در چیزهای کوچک امین است، در چیزهای بزرگ نیز امین است.", ref: "انجیل لوقا — باب ۱۶، آیه ۱۰" },
+  { text: "دل خود را به تمامه بر خداوند توکل ده و بر فهم خویش تکیه مکن؛ در همه راه‌هایت او را بشناس و او طریق‌هایت را راست خواهد گردانید.", ref: "امثال سلیمان — باب ۳، آیات ۵ و ۶" }
+];
+
+const CATS = ["مقاله","دوره‌های آموزشی","کانال یوتیوب","پیج اینستاگرام","زبان چینی","کارهای دانشگاه","انجمن‌ها","باشگاه","سایر"];
+const SESSION_KEY = "masireman_session_email";
+const $ = id => document.getElementById(id);
+const today = () => localDate(new Date());
+function localDate(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+function fa(n){ return new Intl.NumberFormat("fa-IR").format(n); }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+let currentUserEmail = localStorage.getItem(SESSION_KEY) || "";
+let pendingOtp = null;
+let cooldownTimer = null;
+let quoteOffset = 0;
+
+function userStorageKey(email){
+  return "masireman_user_" + email.trim().toLowerCase();
+}
+
+function defaultSettings(){
+  return {
+    appName: "مسیر من",
+    userName: "",
+    pointUnit: "امتیاز",
+    xp30: 30,
+    quoteSource: "quran",
+    pdfBookName: "",
+    pdfQuotes: []
+  };
+}
+
+function defaultDb(){
+  return { tasks: [], logs: [], rests: [], settings: defaultSettings(), categories: [...CATS] };
+}
+
+function loadDb(){
+  if(!currentUserEmail) return defaultDb();
+  try{
+    const raw = localStorage.getItem(userStorageKey(currentUserEmail));
+    if(!raw) return defaultDb();
+    const parsed = JSON.parse(raw);
+    return {
+      tasks: Array.isArray(parsed.tasks) ? parsed.tasks : [],
+      logs: Array.isArray(parsed.logs) ? parsed.logs : [],
+      rests: Array.isArray(parsed.rests) ? parsed.rests : [],
+      settings: { ...defaultSettings(), ...(parsed.settings || {}) },
+      categories: Array.isArray(parsed.categories) && parsed.categories.length ? parsed.categories : [...CATS]
+    };
+  }catch{
+    return defaultDb();
+  }
+}
+
+let db = loadDb(), selected = today(), selectedTask = null, month = new Date();
+
+function currentCats(){ return db.categories || CATS; }
+function pointUnit(){ return (db.settings && db.settings.pointUnit && db.settings.pointUnit.trim()) ? db.settings.pointUnit.trim() : "امتیاز"; }
+function appTitle(){ return (db.settings && db.settings.appName && db.settings.appName.trim()) ? db.settings.appName.trim() : "مسیر من"; }
+function userName(){ return (db.settings && db.settings.userName && db.settings.userName.trim()) ? db.settings.userName.trim() : ""; }
+function xpForMinutes(m){ return Math.round((m / 30) * Number(db.settings.xp30 || 30)); }
+
+// سیستم سطح‌بندی پلکانی: سطح ۱ نیازمند ۳۰۰ امتیاز، و تا سطح ۱۰ هر سطح ۲۰۰ تا بیشتر (۳۰۰، ۵۰۰، ۷۰۰ ... تا ۲۱۰۰)
+function requiredForLevelStep(lvl){
+  const capped = Math.min(Math.max(1, lvl), 10);
+  return 300 + (capped - 1) * 200; // سطح 1 = 300، سطح 2 = 500، ...، سطح 10 = 2100
+}
+
+function levelData(){
+  let remaining = xp();
+  let lvl = 1;
+  while(true){
+    const req = requiredForLevelStep(lvl);
+    if(remaining >= req){
+      remaining -= req;
+      lvl += 1;
+    } else {
+      return { level: lvl, within: remaining, step: req };
+    }
+  }
+}
+
+function save(){
+  if(currentUserEmail){
+    localStorage.setItem(userStorageKey(currentUserEmail), JSON.stringify(db));
+  }
+  render();
+  if($("adminPanel").style.display !== "none") renderAdmin();
+}
+function mins(){ return db.logs.reduce((a,l)=>a+l.minutes,0); }
+function xp(){ return db.logs.reduce((a,l)=>a+l.xp,0); }
+function logsOn(date){ return db.logs.filter(l=>l.date===date); }
+
+// --- مدیریت آیه و جملات روزانه ---
+function getActiveQuotePool(){
+  const src = db.settings.quoteSource || "quran";
+  if(src === "pdf" && Array.isArray(db.settings.pdfQuotes) && db.settings.pdfQuotes.length > 0){
+    return {
+      badge: `کتاب PDF: ${db.settings.pdfBookName || "کتاب شخصی"}`,
+      list: db.settings.pdfQuotes.map((q, idx) => ({ text: q, ref: `${db.settings.pdfBookName || "کتاب PDF"} — جمله ${fa(idx + 1)}` }))
+    };
+  }
+  if(src === "bible"){
+    return { badge: "انجیل مقدس", list: BIBLE_VERSES };
+  }
+  if(src === "both"){
+    return { badge: "قرآن و انجیل", list: [...QURAN_VERSES, ...BIBLE_VERSES] };
+  }
+  return { badge: "قرآن کریم", list: QURAN_VERSES };
+}
+
+function renderDailyQuote(){
+  const pool = getActiveQuotePool();
+  $("quoteSourceBadge").textContent = pool.badge;
+  if(!pool.list.length){
+    $("dailyQuoteText").textContent = "هنوز جمله‌ای در این منبع ثبت نشده است.";
+    $("dailyQuoteRef").textContent = "";
+    return;
+  }
+  // انتخاب بر اساس تاریخ روز + آفست دستی کاربر
+  const daySeed = Number(selected.replaceAll("-","")) || 1;
+  const idx = (daySeed + quoteOffset) % pool.list.length;
+  const item = pool.list[idx];
+  $("dailyQuoteText").textContent = item.text;
+  $("dailyQuoteRef").textContent = item.ref;
+}
+
+$("nextQuoteBtn").onclick = () => {
+  quoteOffset += 1;
+  renderDailyQuote();
+};
+
+// استخراج متن و جملات روزانه از فایل PDF کاربر
+$("pdfUploadInput").onchange = async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  $("pdfStatusInfo").textContent = "در حال خواندن و استخراج جملات از کتاب PDF...";
+  try{
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = "";
+    const maxPages = Math.min(pdf.numPages, 60); // تا ۶۰ صفحه اول برای سرعت و حافظه مرورگر
+    for(let p = 1; p <= maxPages; p++){
+      const page = await pdf.getPage(p);
+      const content = await page.getTextContent();
+      const pageStr = content.items.map(it => it.str).join(" ");
+      fullText += " " + pageStr;
+    }
+    const rawSentences = fullText
+      .replace(/\s+/g, " ")
+      .split(/(?<=[.؟!\n])\s+/)
+      .map(s => s.trim())
+      .filter(s => s.length >= 25 && s.length <= 320);
+
+    const uniqueSentences = [...new Set(rawSentences)].slice(0, 365);
+    if(!uniqueSentences.length){
+      alert("متن قابل استخراجی در این فایل PDF پیدا نشد (ممکن است اسکن تصویری باشد).");
+      $("pdfStatusInfo").textContent = "خطا: متنی در PDF یافت نشد.";
+      return;
+    }
+
+    db.settings.pdfBookName = file.name.replace(/\.pdf$/i, "");
+    db.settings.pdfQuotes = uniqueSentences;
+    db.settings.quoteSource = "pdf";
+    $("quoteSourceSelect").value = "pdf";
+    quoteOffset = 0;
+    save();
+    alert(`${fa(uniqueSentences.length)} جمله روزانه از کتاب «${db.settings.pdfBookName}» استخراج و فعال شد.`);
+  }catch(err){
+    alert("خطا در خواندن فایل PDF.");
+    $("pdfStatusInfo").textContent = "خطا در پردازش فایل PDF.";
+  }
+  e.target.value = "";
+};
+
+$("clearPdfQuotesBtn").onclick = () => {
+  if(!db.settings.pdfQuotes || !db.settings.pdfQuotes.length) return;
+  if(confirm("کتاب PDF ذخیره‌شده حذف شود؟")){
+    db.settings.pdfBookName = "";
+    db.settings.pdfQuotes = [];
+    if(db.settings.quoteSource === "pdf") db.settings.quoteSource = "quran";
+    save();
+  }
+};
+
+$("quoteSourceSelect").onchange = () => {
+  db.settings.quoteSource = $("quoteSourceSelect").value;
+  quoteOffset = 0;
+  save();
+};
+
+// --- مدیریت OTP و ورود ---
+function showAuthStatus(msg, type){
+  const el = $("authStatus");
+  el.textContent = msg;
+  el.className = "status-msg " + (type === "ok" ? "ok" : "err");
+}
+
+function generateOtp(){
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function formatExpiryTime(ts){
+  const d = new Date(ts);
+  return `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+}
+
+function startCooldown(sec = 60){
+  clearInterval(cooldownTimer);
+  let rem = sec;
+  $("resendOtpBtn").disabled = true;
+  $("cooldownSec").textContent = rem;
+  cooldownTimer = setInterval(() => {
+    rem -= 1;
+    if(rem <= 0){
+      clearInterval(cooldownTimer);
+      $("resendOtpBtn").disabled = false;
+      $("resendOtpBtn").textContent = "ارسال مجدد کد";
+    } else {
+      $("cooldownSec").textContent = rem;
+    }
+  }, 1000);
+}
+
+async function handleSendOtp(){
+  const email = $("loginEmail").value.trim().toLowerCase();
+  const enteredName = $("loginUserName").value.trim();
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    showAuthStatus("لطفاً یک آدرس ایمیل معتبر وارد کنید.", "err");
+    return;
+  }
+
+  const code = generateOtp();
+  const expiresAt = Date.now() + 15 * 60 * 1000;
+  pendingOtp = { email, userName: enteredName, code, expiresAt };
+
+  $("sendOtpBtn").disabled = true;
+  $("sendOtpBtn").textContent = "در حال ارسال کد...";
+  showAuthStatus("در حال ارسال کد تایید به ایمیل شما...", "ok");
+
+  try{
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: email,
+      otp_code: code,
+      time: formatExpiryTime(expiresAt)
+    });
+
+    $("otpTargetEmail").textContent = email;
+    $("stepEmail").style.display = "none";
+    $("stepOtp").style.display = "block";
+    $("otpCodeInput").value = "";
+    $("otpCodeInput").focus();
+    showAuthStatus("کد ۶ رقمی به ایمیل شما ارسال شد.", "ok");
+    startCooldown(60);
+  }catch(err){
+    showAuthStatus("خطا در ارسال ایمیل. تنظیمات سرویس ایمیل را بررسی کنید.", "err");
+  }finally{
+    $("sendOtpBtn").disabled = false;
+    $("sendOtpBtn").textContent = "ارسال کد ورود به ایمیل";
+  }
+}
+
+function handleVerifyOtp(){
+  if(!pendingOtp){
+    showAuthStatus("ابتدا درخواست ارسال کد بدهید.", "err");
+    return;
+  }
+  if(Date.now() > pendingOtp.expiresAt){
+    pendingOtp = null;
+    showAuthStatus("کد منقضی شده است. دوباره کد بگیرید.", "err");
+    return;
+  }
+  const entered = $("otpCodeInput").value.trim();
+  if(entered !== pendingOtp.code){
+    showAuthStatus("کد واردشده اشتباه است.", "err");
+    return;
+  }
+
+  const verifiedEmail = pendingOtp.email;
+  const enteredName = pendingOtp.userName;
+  pendingOtp = null;
+  clearInterval(cooldownTimer);
+
+  currentUserEmail = verifiedEmail;
+  localStorage.setItem(SESSION_KEY, currentUserEmail);
+  db = loadDb();
+  if(enteredName){
+    db.settings.userName = enteredName;
+    localStorage.setItem(userStorageKey(currentUserEmail), JSON.stringify(db));
+  }
+  selected = today();
+  selectedTask = null;
+  month = new Date();
+
+  openAppScreen();
+}
+
+function openAppScreen(){
+  $("authScreen").style.display = "none";
+  $("appScreen").style.display = "block";
+  $("category").innerHTML = currentCats().map(c=>`<option>${esc(c)}</option>`).join("");
+  $("taskDate").value = selected;
+  render();
+}
+
+function logoutUser(){
+  currentUserEmail = "";
+  localStorage.removeItem(SESSION_KEY);
+  $("adminPanel").style.display = "none";
+  $("appScreen").style.display = "none";
+  $("authScreen").style.display = "flex";
+  $("stepOtp").style.display = "none";
+  $("stepEmail").style.display = "block";
+  $("otpCodeInput").value = "";
+  $("authStatus").className = "status-msg";
+}
+
+$("sendOtpBtn").onclick = handleSendOtp;
+$("resendOtpBtn").onclick = handleSendOtp;
+$("verifyOtpBtn").onclick = handleVerifyOtp;
+$("otpCodeInput").addEventListener("keydown", e => { if(e.key === "Enter") handleVerifyOtp(); });
+$("loginEmail").addEventListener("keydown", e => { if(e.key === "Enter") handleSendOtp(); });
+$("changeEmailBtn").onclick = () => {
+  pendingOtp = null;
+  clearInterval(cooldownTimer);
+  $("stepOtp").style.display = "none";
+  $("stepEmail").style.display = "block";
+  $("authStatus").className = "status-msg";
+};
+$("logoutBtn").onclick = logoutUser;
+
+// --- رندر پنل اصلی ---
+function render(){
+  const unit = pointUnit();
+  const title = appTitle();
+  const uName = userName();
+
+  document.title = `${title} | پیگیری پیشرفت`;
+  $("mainAppTitle").textContent = title;
+  $("authAppTitle").textContent = title;
+
+  if(uName){
+    $("welcomeBanner").innerHTML = `<strong style="color:var(--accent)">${esc(uName)} عزیز، خوش آمدی! 👋</strong> هر قدم کوچک، یک پیشرفت واقعی است.`;
+    $("currentUserBadge").textContent = `${uName} (${currentUserEmail})`;
+  } else {
+    $("welcomeBanner").textContent = "هر قدم کوچک، یک پیشرفت واقعی است.";
+    $("currentUserBadge").textContent = currentUserEmail;
+  }
+
+  document.querySelectorAll(".unit-label").forEach(el => el.textContent = unit);
+  $("chartUnitPill").textContent = `${unit} روزانه`;
+
+  // بروزرسانی دکمه‌های ثبت سریع با نام واحد امتیاز کاربر
+  $("qBtn30").innerHTML = `۳۰ دقیقه<br>+${fa(xpForMinutes(30))} ${esc(unit)}`;
+  $("qBtn60").innerHTML = `۱ ساعت<br>+${fa(xpForMinutes(60))} ${esc(unit)}`;
+  $("qBtn120").innerHTML = `۲ ساعت<br>+${fa(xpForMinutes(120))} ${esc(unit)}`;
+
+  $("totalXp").textContent = fa(xp());
+  $("totalTime").textContent = fa(mins());
+  $("activeDays").textContent = fa(new Set(db.logs.map(l=>l.date)).size);
+
+  const lv = levelData();
+  $("level").textContent = fa(lv.level);
+  $("levelName").textContent = lv.level < 3 ? "تازه‌کار" : lv.level < 6 ? "پیگیر" : lv.level < 10 ? "پیشرو" : "استاد استمرار";
+  $("levelProgressText").textContent = `${fa(lv.within)} / ${fa(lv.step)} ${unit}`;
+  $("levelBar").style.width = Math.min(100, (lv.within / lv.step * 100)) + "%";
+  $("levelFrom").textContent = `سطح ${fa(lv.level)}`;
+  $("levelTo").textContent = `سطح ${fa(lv.level + 1)} (نیاز این سطح: ${fa(lv.step)} ${unit})`;
+  $("selectedDateLabel").textContent = new Date(selected + "T12:00:00").toLocaleDateString("fa-IR", { weekday:"long", month:"long", day:"numeric" });
+
+  renderDailyQuote();
+  renderTasks();
+  renderCalendar();
+  renderChart();
+  renderBadges();
+  renderLogs();
+  renderLimits();
+}
+
+function renderTasks(){
+  const list = db.tasks.filter(t=>t.date===selected);
+  $("taskList").innerHTML = "";
+  if(!list.length){
+    $("taskList").innerHTML = '<div class="empty">برای این روز هنوز کاری تعریف نکرده‌ای. یک فعالیت اضافه کن.</div>';
+    selectedTask = null;
+    $("quickHint").textContent = "ابتدا یک فعالیت انتخاب کن.";
+    return;
+  }
+  list.forEach(t=>{
+    const total = db.logs.filter(l=>l.taskId===t.id).reduce((a,l)=>a+l.minutes,0);
+    const el = document.createElement("div");
+    el.className = "task" + (t.done ? " done" : "");
+    el.innerHTML = `<div><div class="task-title">${esc(t.name)} ${t.done?'✓':''}</div><div class="task-meta">${esc(t.category)} · ${fa(total)} دقیقه ثبت‌شده</div></div><div class="task-actions"><button class="secondary" data-select="${t.id}">${selectedTask===t.id?"انتخاب‌شده":"انتخاب"}</button><button class="secondary" data-done="${t.id}">${t.done?"بازگردانی":"انجام شد"}</button><button class="danger" data-delete="${t.id}">حذف</button></div>`;
+    $("taskList").appendChild(el);
+  });
+  $("taskList").querySelectorAll("[data-select]").forEach(b=>b.onclick=()=>{selectedTask=b.dataset.select;renderTasks();$("quickHint").textContent="زمان را با یکی از دکمه‌های بالا ثبت کن."});
+  $("taskList").querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>{let t=db.tasks.find(x=>x.id===b.dataset.done);t.done=!t.done;save()});
+  $("taskList").querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{if(confirm("این فعالیت حذف شود؟ ثبت‌های زمانی آن نیز حذف می‌شوند.")){db.tasks=db.tasks.filter(x=>x.id!==b.dataset.delete);db.logs=db.logs.filter(x=>x.taskId!==b.dataset.delete);if(selectedTask===b.dataset.delete)selectedTask=null;save()}});
+}
+
+function renderCalendar(){
+  const y = month.getFullYear(), m = month.getMonth();
+  $("monthLabel").textContent = month.toLocaleDateString("fa-IR", { month:"long", year:"numeric" });
+  const first = new Date(y,m,1), offset = (first.getDay()+1)%7, days = new Date(y,m+1,0).getDate();
+  const names = ["ش","ی","د","س","چ","پ","ج"];
+  $("calendar").innerHTML = names.map(x=>`<div class="dayname">${x}</div>`).join("");
+  const prevDays = new Date(y,m,0).getDate();
+  for(let i=0;i<42;i++){
+    let n=i-offset+1,d,other=false;
+    if(n<1){d=new Date(y,m-1,prevDays+n);other=true}
+    else if(n>days){d=new Date(y,m+1,n-days);other=true}
+    else d=new Date(y,m,n);
+    const ds = localDate(d), el = document.createElement("div");
+    el.className = "day"+(other?" mutedday":"")+(ds===selected?" selected":"")+(ds===today()?" today":"");
+    const has = db.tasks.some(t=>t.date===ds)||db.logs.some(l=>l.date===ds);
+    el.innerHTML = fa(d.getDate())+(has?'<div style="width:4px;height:4px;border-radius:50%;background:var(--accent);margin:2px auto 0"></div>':"");
+    el.onclick = ()=>{selected=ds;$("taskDate").value=ds;selectedTask=null;render()};
+    $("calendar").appendChild(el);
+    if(i>=offset+days-1&&i>=34)break;
+  }
+}
+
+function renderChart(){
+  const c=$("chart"),ctx=c.getContext("2d"),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
+  const dates=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);dates.push(localDate(d))}
+  const vals=dates.map(d=>db.logs.filter(l=>l.date===d).reduce((a,l)=>a+l.xp,0));const max=Math.max(100,...vals);
+  ctx.strokeStyle="#2a3855";ctx.lineWidth=1;for(let j=0;j<4;j++){let y=20+j*42;ctx.beginPath();ctx.moveTo(35,y);ctx.lineTo(w-10,y);ctx.stroke()}
+  const bw=42,gap=(w-65)/7;vals.forEach((v,i)=>{let bh=v/max*115,x=43+i*gap,y=145-bh;ctx.fillStyle="#72e0b2";ctx.beginPath();ctx.roundRect(x,y,bw,bh,7);ctx.fill();ctx.fillStyle="#9eacc7";ctx.font="14px Tahoma";ctx.textAlign="center";ctx.fillText(fa(v),x+bw/2,y-7);ctx.fillText(new Date(dates[i]+"T12:00:00").toLocaleDateString("fa-IR",{weekday:"short"}),x+bw/2,170)});
+}
+
+function getAchievements(){
+  const u = pointUnit();
+  return [
+   ["🌱","اولین قدم","اولین ۳۰ دقیقه",()=>mins()>=30],
+   ["⏳","یک ساعت تلاش","۶۰ دقیقه فعالیت",()=>mins()>=60],
+   ["🔥","چهار ساعت","۲۴۰ دقیقه فعالیت",()=>mins()>=240],
+   ["🏅",`هزار ${u}`,`کسب ۱۰۰۰ ${u}`,()=>xp()>=1000],
+   ["🚀","سطح پنج","رسیدن به سطح ۵",()=>levelData().level>=5],
+   ["📅","پیوستگی","فعالیت در ۷ روز متفاوت",()=>new Set(db.logs.map(l=>l.date)).size>=7],
+   ["🧠","تنوع","فعالیت در ۵ دسته متفاوت",()=>new Set(db.logs.map(l=>l.category)).size>=5],
+   ["🎯","برنامه‌ریز","تعریف ۱۰ فعالیت",()=>db.tasks.length>=10],
+   ["💎","استمرار","ثبت ۲۰ جلسه زمانی",()=>db.logs.length>=20]
+  ];
+}
+
+function renderBadges(){
+  const achievements = getAchievements();
+  let unlocked = achievements.filter(a=>a[3]()).length;
+  $("badgeCount").textContent = `${fa(unlocked)} از ${fa(achievements.length)} بازشده`;
+  $("badges").innerHTML = achievements.map(a=>`<div class="badge ${a[3]()?"":"locked"}"><div class="emoji">${a[0]}</div><strong>${esc(a[1])}</strong><small>${esc(a[2])}</small></div>`).join("");
+}
+
+function renderLogs(){
+  const u = pointUnit();
+  let ls = logsOn(selected);
+  $("logList").innerHTML = ls.length ? ls.slice().reverse().map(l=>`<div class="task"><div><div class="task-title">${esc(l.taskName)}</div><div class="task-meta">${esc(l.category)} · ${fa(l.minutes)} دقیقه</div></div><span class="pill">+${fa(l.xp)} ${esc(u)}</span></div>`).join("") : '<div class="empty">هنوز زمانی برای این روز ثبت نشده است.</div>';
+}
+
+$("addTask").onclick=()=>{
+  let name=$("taskName").value.trim(),date=$("taskDate").value||selected;
+  if(!name){alert("عنوان فعالیت را وارد کن.");return}
+  db.tasks.push({id:crypto.randomUUID(),name,category:$("category").value,date,done:false});
+  selected=date;selectedTask=null;$("taskName").value="";save();
+};
+document.querySelectorAll("[data-quick]").forEach(b=>b.onclick=()=>{
+  if(!selectedTask){alert("ابتدا یک فعالیت را از فهرست انتخاب کن.");return}
+  let t=db.tasks.find(x=>x.id===selectedTask);if(!t)return;
+  let m=Number(b.dataset.quick);if(!canLog(t.category,selected,m))return;
+  db.logs.push({id:crypto.randomUUID(),taskId:t.id,taskName:t.name,category:t.category,date:selected,minutes:m,xp:xpForMinutes(m)});
+  save();
+});
+$("prevMonth").onclick=()=>{month.setMonth(month.getMonth()-1);renderCalendar()};
+$("nextMonth").onclick=()=>{month.setMonth(month.getMonth()+1);renderCalendar()};
 $("taskDate").onchange=()=>{selected=$("taskDate").value||today();selectedTask=null;month=new Date(selected+"T12:00:00");render()};
-$("exportBtn").onclick=()=>{let blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="masireman-backup.json";a.click();URL.revokeObjectURL(a.href)};
-$("importBtn").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!Array.isArray(x.tasks)||!Array.isArray(x.logs))throw Error();if(confirm("اطلاعات فعلی با نسخه پشتیبان جایگزین شود؟")){db=x;save()}}catch{alert("فایل پشتیبان معتبر نیست.")}e.target.value=""};
+$("exportBtn").onclick=()=>{
+  let blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}),a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download=`masireman-${currentUserEmail}.json`;a.click();URL.revokeObjectURL(a.href);
+};
+$("importBtn").onclick=()=>$("importFile").click();
+$("importFile").onchange=async e=>{
+  let f=e.target.files[0];if(!f)return;
+  try{
+    let x=JSON.parse(await f.text());
+    if(!Array.isArray(x.tasks)||!Array.isArray(x.logs))throw Error();
+    if(confirm("اطلاعات فعلی این حساب با نسخه پشتیبان جایگزین شود؟")){
+      db = {
+        tasks: x.tasks,
+        logs: x.logs, rests: Array.isArray(x.rests) ? x.rests : [],
+        settings: { ...defaultSettings(), ...(x.settings || {}) },
+        categories: Array.isArray(x.categories) && x.categories.length ? x.categories : [...CATS]
+      };
+      save();
+    }
+  }catch{alert("فایل پشتیبان معتبر نیست.")}
+  e.target.value="";
+};
 
 function renderAdmin(){
- $("xp30").value=db.settings.xp30;$("xpLevel").value=db.settings.xpLevel;
- $("adminTaskCount").textContent=fa(db.tasks.length);$("adminLogCount").textContent=fa(db.logs.length);
- $("categoryAdmin").innerHTML=currentCats().map((c,i)=>`<div class="task"><span>${esc(c)}</span><button class="danger" data-catdel="${i}" style="padding:5px 9px">حذف</button></div>`).join("");
- $("categoryAdmin").querySelectorAll("[data-catdel]").forEach(b=>b.onclick=()=>{let i=Number(b.dataset.catdel);if(confirm("این دسته از فهرست انتخاب حذف شود؟ فعالیت‌های قبلی حذف نمی‌شوند.")){db.categories.splice(i,1);$("category").innerHTML=currentCats().map(c=>`<option>${esc(c)}</option>`).join("");save()}});
- $("adminLogs").innerHTML=db.logs.length?db.logs.slice().reverse().map(l=>`<div class="task"><div><div class="task-title">${esc(l.taskName)}</div><div class="task-meta">${esc(l.date)} · ${fa(l.minutes)} دقیقه · ${fa(l.xp)} XP</div></div><div class="task-actions"><button class="secondary" data-editlog="${l.id}">ویرایش</button><button class="danger" data-dellog="${l.id}">حذف</button></div></div>`).join(""):'<div class="empty">هنوز ثبت زمانی وجود ندارد.</div>';
- $("adminLogs").querySelectorAll("[data-editlog]").forEach(b=>b.onclick=()=>{let l=db.logs.find(x=>x.id===b.dataset.editlog);let m=prompt("مدت زمان به دقیقه:",l.minutes);if(m===null)return;m=Number(m);if(!Number.isFinite(m)||m<=0){alert("مدت باید عددی بیشتر از صفر باشد.");return}l.minutes=Math.round(m);l.xp=xpForMinutes(l.minutes);save()});
- $("adminLogs").querySelectorAll("[data-dellog]").forEach(b=>b.onclick=()=>{if(confirm("این ثبت زمانی حذف شود؟ امتیاز آن نیز کم می‌شود.")){db.logs=db.logs.filter(x=>x.id!==b.dataset.dellog);save()}});
+  const u = pointUnit();
+  $("appNameInput").value = appTitle();
+  $("userNameInput").value = userName();
+  $("pointUnitInput").value = u;
+  $("xp30").value = db.settings.xp30 || 30;
+  $("quoteSourceSelect").value = db.settings.quoteSource || "quran";
+
+  if(Array.isArray(db.settings.pdfQuotes) && db.settings.pdfQuotes.length){
+    $("pdfStatusInfo").textContent = `کتاب فعلی: «${db.settings.pdfBookName || "PDF"}» (${fa(db.settings.pdfQuotes.length)} جمله ذخیره‌شده)`;
+  } else {
+    $("pdfStatusInfo").textContent = "هیچ کتاب PDF بارگذاری نشده است.";
+  }
+
+  $("adminTaskCount").textContent = fa(db.tasks.length);
+  $("adminLogCount").textContent = fa(db.logs.length);
+  $("categoryAdmin").innerHTML = currentCats().map((c,i)=>`<div class="task"><span>${esc(c)}</span><button class="danger" data-catdel="${i}" style="padding:5px 9px">حذف</button></div>`).join("");
+  $("categoryAdmin").querySelectorAll("[data-catdel]").forEach(b=>b.onclick=()=>{
+    let i=Number(b.dataset.catdel);
+    if(confirm("این دسته از فهرست انتخاب حذف شود؟ فعالیت‌های قبلی حذف نمی‌شوند.")){
+      db.categories.splice(i,1);
+      $("category").innerHTML=currentCats().map(c=>`<option>${esc(c)}</option>`).join("");
+      save();
+    }
+  });
+  $("adminLogs").innerHTML = db.logs.length ? db.logs.slice().reverse().map(l=>`<div class="task"><div><div class="task-title">${esc(l.taskName)}</div><div class="task-meta">${esc(l.date)} · ${fa(l.minutes)} دقیقه · ${fa(l.xp)} ${esc(u)}</div></div><div class="task-actions"><button class="secondary" data-editlog="${l.id}">ویرایش</button><button class="danger" data-dellog="${l.id}">حذف</button></div></div>`).join("") : '<div class="empty">هنوز ثبت زمانی وجود ندارد.</div>';
+  $("adminLogs").querySelectorAll("[data-editlog]").forEach(b=>b.onclick=()=>{
+    let l=db.logs.find(x=>x.id===b.dataset.editlog);
+    let m=prompt("مدت زمان به دقیقه:",l.minutes);
+    if(m===null)return;m=Number(m);
+    if(!Number.isFinite(m)||m<=0){alert("مدت باید عددی بیشتر از صفر باشد.");return}
+    if(!canLog(l.category,l.date,Math.round(m),l.id))return;l.minutes=Math.round(m);l.xp=xpForMinutes(l.minutes);save();
+  });
+  $("adminLogs").querySelectorAll("[data-dellog]").forEach(b=>b.onclick=()=>{
+    if(confirm("این ثبت زمانی حذف شود؟ امتیاز آن نیز کم می‌شود.")){db.logs=db.logs.filter(x=>x.id!==b.dataset.dellog);save()}
+  });
 }
+
 $("adminToggle").onclick=()=>{$("adminPanel").style.display="block";renderAdmin();$("adminPanel").scrollIntoView({behavior:"smooth"})};
 $("closeAdmin").onclick=()=>$("adminPanel").style.display="none";
-$("saveRules").onclick=()=>{let a=Number($("xp30").value),b=Number($("xpLevel").value);if(!Number.isFinite(a)||a<0||!Number.isFinite(b)||b<1){alert("مقادیر واردشده معتبر نیستند.");return}db.settings.xp30=a;db.settings.xpLevel=b;db.logs.forEach(l=>l.xp=xpForMinutes(l.minutes));save();alert("قوانین امتیازدهی ذخیره شد. امتیاز ثبت‌های قبلی نیز با قانون جدید محاسبه شد.")};
-$("addCategory").onclick=()=>{let c=$("newCategory").value.trim();if(!c)return;if(currentCats().includes(c)){alert("این دسته از قبل وجود دارد.");return}db.categories.push(c);$("newCategory").value="";$("category").innerHTML=currentCats().map(x=>`<option>${esc(x)}</option>`).join("");save()};
+$("saveRules").onclick=()=>{
+  const newAppName = $("appNameInput").value.trim() || "مسیر من";
+  const newUserName = $("userNameInput").value.trim();
+  const newPointUnit = $("pointUnitInput").value.trim() || "امتیاز";
+  const a = Number($("xp30").value);
+  if(!Number.isFinite(a) || a < 0){
+    alert("ضریب امتیاز هر ۳۰ دقیقه معتبر نیست.");
+    return;
+  }
+  db.settings.appName = newAppName;
+  db.settings.userName = newUserName;
+  db.settings.pointUnit = newPointUnit;
+  db.settings.xp30 = a;
+  db.logs.forEach(l => l.xp = xpForMinutes(l.minutes));
+  save();
+  alert("نام برنامه، نام کاربر، واحد امتیاز و قوانین سطح‌بندی ذخیره شد.");
+};
+$("addCategory").onclick=()=>{
+  let c=$("newCategory").value.trim();if(!c)return;
+  if(currentCats().includes(c)){alert("این دسته از قبل وجود دارد.");return}
+  db.categories.push(c);$("newCategory").value="";$("category").innerHTML=currentCats().map(x=>`<option>${esc(x)}</option>`).join("");save();
+};
 $("exportAdmin").onclick=()=>$("exportBtn").click();
-$("resetData").onclick=()=>{if(confirm("همه فعالیت‌ها، ثبت‌های زمانی و امتیازها برای همیشه از این مرورگر پاک شوند؟ ابتدا از اطلاعات نسخه پشتیبان بگیر.")){db={tasks:[],logs:[],settings:{xp30:30,xpLevel:500},categories:[...CATS]};selectedTask=null;save();renderAdmin()}};
+$("resetData").onclick=()=>{
+  if(confirm("همه فعالیت‌ها، ثبت‌های زمانی و امتیازهای این حساب برای همیشه پاک شوند؟ ابتدا از اطلاعات نسخه پشتیبان بگیر.")){
+    db=defaultDb();selectedTask=null;save();renderAdmin();
+  }
+};
 
-render();
+
+// ===== سقف زمانی، استراحت =====
+const MAXCAT=120, MAXREST=90;
+const usedCat=(c,d,ex)=>db.logs.filter(l=>l.category===c&&l.date===d&&l.id!==ex).reduce((a,l)=>a+l.minutes,0);
+function canLog(c,d,m,ex){
+  const u=usedCat(c,d,ex);
+  if(u+m>MAXCAT){alert(`سقف هر دسته ۲ ساعت در روز است. برای «${c}» در این روز ${fa(u)} دقیقه ثبت شده و ${fa(Math.max(0,MAXCAT-u))} دقیقه باقی مانده. کمی استراحت کن یا سراغ دسته دیگری برو.`);return false}
+  return true;
+}
+const restUsed=d=>(db.rests||[]).filter(r=>r.date===d).reduce((a,r)=>a+r.minutes,0);
+function renderLimits(){
+  $("limitList").innerHTML=currentCats().map(c=>{const u=usedCat(c,selected),p=Math.min(100,u/MAXCAT*100);
+    return `<div class="lim"><div class="row"><span>${esc(c)}</span><span class="muted">${fa(u)} / ${fa(MAXCAT)} دقیقه</span></div><div class="progress"><i style="width:${p}%;${u>=MAXCAT?"background:var(--red)":""}"></i></div></div>`}).join("");
+  const r=restUsed(selected);
+  $("restPill").textContent=`${fa(r)} / ${fa(MAXREST)} دقیقه`;
+  $("restBar").style.width=Math.min(100,r/MAXREST*100)+"%";
+}
+document.querySelectorAll("[data-rest]").forEach(b=>b.onclick=()=>{
+  const m=+b.dataset.rest,u=restUsed(selected);
+  if(u+m>MAXREST){alert(`سقف استراحت ۱ ساعت و نیم در روز است؛ ${fa(Math.max(0,MAXREST-u))} دقیقه باقی مانده.`);return}
+  db.rests.push({id:crypto.randomUUID(),date:selected,minutes:m});save();
+});
+$("restUndo").onclick=()=>{const i=db.rests.map(r=>r.date).lastIndexOf(selected);if(i>=0){db.rests.splice(i,1);save()}};
+
+// ===== هسته هوش مصنوعی (اختیاری) =====
+const AI_KEY="masireman_ai_key";
+function aiOn(){return !!localStorage.getItem(AI_KEY)}
+function refreshAiState(){$("aiState").textContent=aiOn()?"AI فعال":"حالت ساده (بدون کلید)"}
+async function askAI(system,user){
+  const key=localStorage.getItem(AI_KEY);if(!key)return null;
+  const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-5-5",max_tokens:1500,system,messages:[{role:"user",content:user}]})});
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  const d=await r.json();
+  return JSON.parse(d.content.map(c=>c.text||"").join("").replace(/```json|```/g,"").trim());
+}
+$("aiKeySave").onclick=()=>{const k=$("aiKeyInput").value.trim();if(!k)return;localStorage.setItem(AI_KEY,k);$("aiKeyInput").value="";refreshAiState();alert("کلید ذخیره شد.")};
+$("aiKeyClear").onclick=()=>{localStorage.removeItem(AI_KEY);refreshAiState()};
+refreshAiState();
+
+// ===== دستیار برنامه‌ریزی =====
+let aiPlan=null;
+const SYS_PLAN='تو دستیار برنامه‌ریزی فارسی‌زبان هستی. فقط JSON معتبر برگردان: {"categories":[{"name":"","minutes":60,"why":""}],"tasks":[{"name":"","category":"","minutes":45}]}. نام دسته‌ها کوتاه و فارسی و حداکثر ۸ دسته. هر دسته حداکثر ۱۲۰ دقیقه در روز؛ مجموع کارهای هر دسته هم از ۱۲۰ دقیقه بیشتر نشود. روز را طوری بچین که برای استراحت (حداکثر ۹۰ دقیقه) جا بماند.';
+function clampPlan(p){
+  const cats=(p.categories||[]).slice(0,8).map(c=>({name:String(c.name).slice(0,30),minutes:Math.min(MAXCAT,Math.max(15,+c.minutes||60)),why:c.why||""}));
+  const left={};cats.forEach(c=>left[c.name]=MAXCAT);
+  const tasks=[];
+  (p.tasks||[]).forEach(t=>{const c=String(t.category);if(!(c in left))return;const m=Math.min(left[c],Math.max(15,+t.minutes||30));if(m<=0)return;left[c]-=m;tasks.push({name:String(t.name).slice(0,60),category:c,minutes:m})});
+  return {categories:cats,tasks};
+}
+function offlinePlan(goal){
+  const items=goal.split(/[،,\n;؛]|\sو\s/).map(x=>x.trim()).filter(Boolean).slice(0,6);
+  return {categories:items.map(i=>({name:i.slice(0,25),minutes:60,why:""})),tasks:items.map(i=>({name:"کار روی "+i.slice(0,25),category:i.slice(0,25),minutes:60}))};
+}
+function renderPlan(){
+  const p=aiPlan,box=$("aiPlanOut");
+  if(!p||!p.categories.length){box.innerHTML='<div class="empty">پیشنهادی ساخته نشد.</div>';return}
+  box.innerHTML=`<strong>دسته‌های پیشنهادی</strong><div class="tasklist" style="margin:8px 0">${p.categories.map(c=>`<div class="task"><div><div class="task-title">${esc(c.name)}</div><div class="task-meta">${esc(c.why)}</div></div><span class="pill">${fa(c.minutes)} دقیقه</span></div>`).join("")}</div>
+  <strong>برنامه پیشنهادی</strong><div class="tasklist" style="margin:8px 0">${p.tasks.map(t=>`<div class="task"><div><div class="task-title">${esc(t.name)}</div><div class="task-meta">${esc(t.category)}</div></div><span class="pill">${fa(t.minutes)} دقیقه</span></div>`).join("")}</div>
+  <div class="quick"><button id="planAddCats" class="secondary">افزودن دسته‌ها</button><button id="planAddTasks">افزودن کارها به برنامه روز انتخاب‌شده</button></div>`;
+  $("planAddCats").onclick=()=>{p.categories.forEach(c=>{if(!currentCats().includes(c.name))db.categories.push(c.name)});$("category").innerHTML=currentCats().map(c=>`<option>${esc(c)}</option>`).join("");save()};
+  $("planAddTasks").onclick=()=>{p.categories.forEach(c=>{if(!currentCats().includes(c.name))db.categories.push(c.name)});
+    p.tasks.forEach(t=>db.tasks.push({id:crypto.randomUUID(),name:`${t.name} (${fa(t.minutes)} دقیقه)`,category:t.category,date:selected,done:false}));
+    $("category").innerHTML=currentCats().map(c=>`<option>${esc(c)}</option>`).join("");save()};
+}
+$("aiPlanBtn").onclick=async()=>{
+  const goal=$("aiGoal").value.trim();if(!goal){alert("ابتدا هدف‌هایت را بنویس.");return}
+  $("aiPlanOut").innerHTML='<div class="empty">در حال برنامه‌ریزی...</div>';
+  let plan=null;
+  try{plan=await askAI(SYS_PLAN,JSON.stringify({goal,existingCategories:currentCats(),maxPerCategoryMin:MAXCAT,maxRestMin:MAXREST}))}catch(e){alert("ارتباط با AI برقرار نشد؛ حالت ساده استفاده شد.")}
+  aiPlan=clampPlan(plan||offlinePlan(goal));renderPlan();
+};
+
+// ===== معرفی فیلم و سریال =====
+// [عنوان، سال، نوع f/s، سبک r/f/a، حال‌وهوا c/i/t/f/k، طول S/M/L، امتیاز IMDb تقریبی، توضیح]
+const MOVIES=[
+["The Shawshank Redemption",1994,"f","r","ik","M",9.3,"زندانی بی‌گناهی که با صبر و امید راهی برای آزادی می‌سازد."],
+["Forrest Gump",1994,"f","r","ic","M",8.8,"سفر ساده‌دل و مهربانی در دل تاریخ آمریکا."],
+["Whiplash",2014,"f","r","it","S",8.5,"شاگرد جاه‌طلب درامر و مربی سخت‌گیر؛ قصه وسواس برای عالی‌شدن."],
+["The Pursuit of Happyness",2006,"f","r","i","M",8.0,"پدری که در فقر، با تلاش و پشتکار زندگی‌اش را می‌سازد."],
+["Good Will Hunting",1997,"f","r","ick","M",8.3,"نابغه‌ای سرکش و مسیر پذیرفتن استعداد و ارتباط با دیگران."],
+["3 Idiots",2009,"f","r","if","L",8.4,"کمدی دانشجویی درباره دنبال‌کردن علاقه به‌جای فشار نمره."],
+["Inception",2010,"f","f","tk","L",8.8,"دزدی ایده در لایه‌های رویا؛ پیچیده و پرهیجان."],
+["Interstellar",2014,"f","f","ki","L",8.7,"سفر فضایی برای نجات بشر و قدرت عشق و زمان."],
+["Arrival",2016,"f","f","kc","M",7.9,"زبان‌شناس و رویارویی با موجودات فضایی؛ آرام و عمیق."],
+["Parasite",2019,"f","r","tk","M",8.5,"فاصله طبقاتی در قالب تریلری تلخ و هوشمندانه."],
+["A Separation",2011,"f","r","k","M",8.3,"درام ایرانی اصغر فرهادی درباره جدایی و دوراهی اخلاقی."],
+["Amélie",2001,"f","r","cf","M",8.3,"دختری پاریسی که پنهانی شادی را میان آدم‌ها پخش می‌کند."],
+["Life Is Beautiful",1997,"f","r","ci","M",8.6,"پدری که با شوخی، جنگ را برای پسرش قابل‌تحمل می‌کند."],
+["Spirited Away",2001,"f","a","ck","M",8.6,"دختری در جهان جادویی ارواح؛ انیمیشن ژاپنی زیبا."],
+["Up",2009,"f","a","cf","S",8.3,"پیرمردی با بالن خانه‌اش ماجراجویی می‌کند."],
+["Inside Out",2015,"f","a","fk","S",8.1,"احساسات یک دختر به‌عنوان شخصیت‌های درون سرش."],
+["Breaking Bad",2008,"s","r","tk","L",9.5,"معلم شیمی که به تولید مواد روی می‌آورد؛ سقوط یک انسان."],
+["Chernobyl",2019,"s","r","tk","S",9.3,"مینی‌سریالی درباره فاجعه چرنوبیل و بهای دروغ."],
+["The Queen's Gambit",2020,"s","r","ti","S",8.6,"دختری یتیم و استعداد شطرنج؛ پیروزی در برابر وابستگی."],
+["Ted Lasso",2020,"s","r","fi","L",8.8,"مربی مهربان و خوش‌بین؛ کمدی دل‌گرم‌کننده."],
+["The Office (US)",2005,"s","r","f","L",9.0,"کمدی محیط اداره با شخصیت‌های ماندگار."],
+["Dark",2017,"s","f","tk","M",8.7,"سریال آلمانی درباره سفر در زمان و رازهای یک شهر کوچک."],
+["Planet Earth II",2016,"s","r","c","S",9.5,"مستند خیره‌کننده از حیات وحش؛ آرام‌بخش."],
+["Avatar: The Last Airbender",2005,"s","a","ifc","M",9.3,"انیمیشنی حماسی درباره تعادل، دوستی و مسئولیت."]
+];
+const MQ=[
+["type","۱) فیلم یا سریال؟",[["f","فیلم"],["s","سریال"],["","فرقی ندارد"]]],
+["mood","۲) حال‌وهوای الان؟",[["c","آرام و دل‌نشین"],["i","انگیزشی"],["t","پرهیجان"],["f","خنده‌دار"],["k","فکری و عمیق"]]],
+["len","۳) چقدر وقت داری؟",[["S","کوتاه"],["M","متوسط"],["L","زیاد / چندفصلی"],["","فرقی ندارد"]]],
+["genre","۴) چه سبکی؟",[["r","واقع‌گرا"],["f","خیال‌پردازی / علمی‌تخیلی"],["a","انیمیشن"],["","فرقی ندارد"]]],
+["min","۵) حداقل امتیاز IMDb؟",[["7.5","۷٫۵ به بالا"],["8","۸ به بالا"],["8.5","۸٫۵ به بالا"],["9","۹ به بالا"]]]
+];
+$("movieForm").innerHTML=MQ.map(q=>`<div class="field"><label>${q[1]}</label><select id="mq_${q[0]}">${q[2].map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("")}</select></div>`).join("");
+function pickMovies(a){
+  const base=MOVIES.filter(m=>m[6]>=+a.min&&(!a.type||m[2]===a.type));
+  const steps=[x=>x[4].includes(a.mood)&&(!a.len||x[5]===a.len)&&(!a.genre||x[3]===a.genre),x=>x[4].includes(a.mood)&&(!a.genre||x[3]===a.genre),x=>x[4].includes(a.mood),x=>true];
+  for(const f of steps){const r=base.filter(f);if(r.length>=3)return r.sort((x,y)=>y[6]-x[6]).slice(0,5).map(toItem)}
+  return base.sort((x,y)=>y[6]-x[6]).slice(0,5).map(toItem);
+}
+const toItem=m=>({title:m[0],year:m[1],type:m[2]==="f"?"فیلم":"سریال",rating:m[6],desc:m[7]});
+function showMovies(list){
+  $("movieOut").innerHTML=list.length?list.map(m=>`<div class="task res"><div class="row" style="width:100%"><span class="task-title ltr">${esc(m.title)} (${esc(m.year)})</span><span class="pill" style="color:var(--gold)">⭐ ${esc(m.rating)} IMDb</span></div><div class="task-meta">${esc(m.type)}</div><div>${esc(m.desc)}</div><a target="_blank" rel="noopener" href="https://www.imdb.com/find/?q=${encodeURIComponent(m.title)}">دیدن در IMDb ↗</a></div>`).join(""):'<div class="empty">موردی با این شرایط پیدا نشد؛ حداقل امتیاز را کمتر کن.</div>';
+}
+$("movieBtn").onclick=async()=>{
+  const a={};MQ.forEach(q=>a[q[0]]=$("mq_"+q[0]).value);
+  $("movieOut").innerHTML='<div class="empty">در حال انتخاب...</div>';
+  let list=null;
+  try{
+    const r=await askAI('تو مشاور فیلم و سریال هستی. بر اساس پاسخ‌های کاربر ۵ عنوان واقعی از IMDb پیشنهاد بده. فقط JSON: [{"title":"نام انگلیسی","year":2010,"type":"فیلم یا سریال","rating":8.5,"desc":"توضیح کوتاه فارسی در یک تا دو جمله"}]. rating نمره تقریبی IMDb است که می‌دانی و از حداقل خواسته‌شده کمتر نباشد. فقط عنوان‌هایی بده که مطمئنی وجود دارند.',JSON.stringify({answers:a,userCategories:currentCats()}));
+    if(Array.isArray(r))list=r;
+  }catch(e){}
+  showMovies(list||pickMovies(a));
+};
+
+// ===== پادکست‌های پیشنهادی =====
+const PODS=[
+[["چینی","chinese","زبان"],"ChinesePod","درس‌های کوتاه و کاربردی چینی از مبتدی تا پیشرفته."],
+[["چینی","chinese","زبان"],"Slow Chinese","متن‌های ساده چینی با سرعت آهسته برای تقویت شنیداری."],
+[["چینی","chinese","زبان"],"Coffee Break Chinese","یادگیری چینی در جلسه‌های کوتاه و خودآموز."],
+[["مقاله","دانشگاه","پژوهش","درس","پایان"],"Hidden Brain","روان‌شناسی و رفتار انسان؛ مناسب مطالعه و پژوهش."],
+[["مقاله","دانشگاه","پژوهش","علم"],"Freakonomics Radio","نگاه دادمحور به اقتصاد و رفتار آدم‌ها."],
+[["یوتیوب","اینستاگرام","پیج","محتوا"],"Social Media Marketing Podcast","استراتژی تولید محتوا و رشد در شبکه‌های اجتماعی."],
+[["یوتیوب","اینستاگرام","پیج","محتوا"],"Think Media Podcast","رشد کانال یوتیوب و ساخت برند شخصی."],
+[["باشگاه","ورزش","تمرین"],"Huberman Lab","علم خواب، تمرین، تمرکز و سلامت."],
+[["باشگاه","ورزش","تمرین"],"The Rich Roll Podcast","گفتگو درباره سبک زندگی سالم و استمرار."],
+[["دوره","آموزش","یادگیری"],"TED Talks Daily","سخنرانی‌های کوتاه و الهام‌بخش درباره یادگیری و ایده‌ها."],
+[["انجمن","شبکه","کار"],"How I Built This","داستان ساخت کسب‌وکارها و پشتکار بنیان‌گذاران."],
+[["اقتصاد","مقاله","دانشگاه"],"رادیو اکونومی","پادکست فارسی اقتصاد و موضوعات روز."],
+[[],"99% Invisible","داستان طراحی پنهان در دنیای اطراف ما."],
+[[],"Stuff You Should Know","موضوعات متنوع و جذاب به زبان ساده."]
+];
+function userProfile(){
+  const mins={};db.logs.forEach(l=>mins[l.category]=(mins[l.category]||0)+l.minutes);
+  return {categories:currentCats(),minutesByCategory:mins,recentTasks:db.tasks.slice(-15).map(t=>t.name)};
+}
+function offlinePods(){
+  const u=userProfile(),tasks=u.recentTasks.join(" ").toLowerCase();
+  return PODS.map((p,i)=>{let sc=0;u.categories.forEach(c=>{if(p[0].some(k=>c.toLowerCase().includes(k)))sc+=1+(u.minutesByCategory[c]||0)/60});if(p[0].some(k=>tasks.includes(k)))sc+=.5;return {p,sc,i}}).sort((a,b)=>b.sc-a.sc||a.i-b.i).slice(0,5).map(x=>({name:x.p[1],why:x.p[2]}));
+}
+function showPods(list){
+  $("podOut").innerHTML=list.map(p=>`<div class="task res"><div class="task-title ltr">${esc(p.name)}</div><div>${esc(p.why)}</div><a target="_blank" rel="noopener" href="https://open.spotify.com/search/${encodeURIComponent(p.name)}">جستجو در Spotify ↗</a></div>`).join("");
+}
+async function loadPods(){
+  showPods(offlinePods());
+  if(!aiOn())return;
+  try{
+    const r=await askAI('تو مشاور پادکست هستی. بر اساس دسته‌بندی‌ها، زمان‌های ثبت‌شده و فعالیت‌های کاربر ۵ پادکست واقعی و شناخته‌شده پیشنهاد بده (انگلیسی یا فارسی). فقط JSON: [{"name":"نام پادکست","why":"یک جمله فارسی که چرا به کاربر می‌خورد"}]. فقط پادکست‌هایی که مطمئنی وجود دارند.',JSON.stringify(userProfile()));
+    if(Array.isArray(r)&&r.length)showPods(r.slice(0,5));
+  }catch(e){}
+}
+$("podBtn").onclick=loadPods;
+loadPods();
+
+// شروع برنامه
+if(currentUserEmail){
+  openAppScreen();
+} else {
+  $("authScreen").style.display = "flex";
+  $("appScreen").style.display = "none";
+}
 </script>
 </body>
 </html>
